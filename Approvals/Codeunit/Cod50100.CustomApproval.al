@@ -150,6 +150,8 @@ codeunit 50100 "Custom Approval"
 
             WorkflowResponseHandling.CancelAllApprovalRequestsCode():
                 WorkflowResponseHandling.AddResponsePredecessor(WorkflowResponseHandling.CancelAllApprovalRequestsCode(), CancelApprovalEventCode);
+            WorkflowResponseHandling.OpenDocumentCode():
+                WorkflowResponseHandling.AddResponsePredecessor(WorkflowResponseHandling.OpenDocumentCode(), CancelApprovalEventCode);
         end;
     end;
 }
