@@ -1,0 +1,35 @@
+﻿@model Admissions.DTOs.CreateNoteDto
+
+<h1>Create Note</h1>
+
+<form method="post">
+
+    <div>
+        <label>Title</label>
+        <br />
+        <input asp-for="Title" />
+    </div>
+
+    <br />
+
+    <div>
+        <label>Description</label>
+        <br />
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <br />
+
+    <div>
+        <label>User Email</label>
+        <br />
+        <input asp-for="UserEmail" />
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Save Note
+    </button>
+
+</form>

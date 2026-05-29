@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\dtos\\createnotedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:dtos\\createnotedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\clients\\businesscentralclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:clients\\businesscentralclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\views\\notes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:views\\notes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\views\\notes\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:views\\notes\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\controllers\\notescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:controllers\\notescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\services\\notesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:services\\notesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\models\\studentnoteresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:models\\studentnoteresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\models\\studentnote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:models\\studentnote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|d:\\appkings\\bc\\bc training\\portals\\admissions\\services\\apiurls.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8983D175-E0E0-4A36-93D1-51D026ED639B}|Admissions.csproj|solutionrelative:services\\apiurls.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Views\\Notes\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Notes\\Create.cshtml",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Views\\Notes\\Create.cshtml",
+              "RelativeToolTip": "Views\\Notes\\Create.cshtml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-27T15:19:53.539Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Views\\Notes\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Notes\\Index.cshtml",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Views\\Notes\\Index.cshtml",
+              "RelativeToolTip": "Views\\Notes\\Index.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAB0AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-27T15:04:57.497Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NotesController.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Controllers\\NotesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\NotesController.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Controllers\\NotesController.cs",
+              "RelativeToolTip": "Controllers\\NotesController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAkwCIAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:53:21.05Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "NotesService.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Services\\NotesService.cs",
+              "RelativeDocumentMoniker": "Services\\NotesService.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Services\\NotesService.cs",
+              "RelativeToolTip": "Services\\NotesService.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAwB8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:51:28.858Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BusinessCentralClient.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Clients\\BusinessCentralClient.cs",
+              "RelativeDocumentMoniker": "Clients\\BusinessCentralClient.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Clients\\BusinessCentralClient.cs",
+              "RelativeToolTip": "Clients\\BusinessCentralClient.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAkwDYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:37:41.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CreateNoteDto.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\DTOs\\CreateNoteDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\CreateNoteDto.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\DTOs\\CreateNoteDto.cs",
+              "RelativeToolTip": "DTOs\\CreateNoteDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:43:51.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "StudentNoteResponse.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Models\\StudentNoteResponse.cs",
+              "RelativeDocumentMoniker": "Models\\StudentNoteResponse.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Models\\StudentNoteResponse.cs",
+              "RelativeToolTip": "Models\\StudentNoteResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T15:11:32.059Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:47:51.225Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "StudentNote.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Models\\StudentNote.cs",
+              "RelativeDocumentMoniker": "Models\\StudentNote.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Models\\StudentNote.cs",
+              "RelativeToolTip": "Models\\StudentNote.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:42:57.932Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ApiUrls.cs",
+              "DocumentMoniker": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Services\\ApiUrls.cs",
+              "RelativeDocumentMoniker": "Services\\ApiUrls.cs",
+              "ToolTip": "D:\\Appkings\\BC\\BC TRAINING\\Portals\\Admissions\\Services\\ApiUrls.cs",
+              "RelativeToolTip": "Services\\ApiUrls.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T14:41:23.192Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

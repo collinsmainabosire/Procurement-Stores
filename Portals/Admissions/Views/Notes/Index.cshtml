@@ -1,0 +1,31 @@
+﻿@model List<Admissions.Models.StudentNote>
+
+<h1>Student Notes</h1>
+
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>User Email</th>
+            <th>Created Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var note in Model)
+        {
+            <tr>
+                <td>@note.Title</td>
+                <td>@note.Description</td>
+                <td>@note.UserEmail</td>
+                <td>@note.CreatedDate</td>
+            </tr>
+        }
+    </tbody>
+    <p>
+        <a href="/Notes/Create">
+            Create New Note
+        </a>
+    </p>
+</table>
