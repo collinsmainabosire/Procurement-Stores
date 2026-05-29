@@ -128,4 +128,20 @@ codeunit 50100 "Custom Approval"
         end;
 
     end;
+    //Adding workflow response predecessors to the library
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnAddWorkflowResponsePredecessorsToLibrary', '', false, false)]
+    local procedure AddWorkflowResponsePredecessorsToLibrary(ResponseFunctionName: Code[128])
+    var
+        WorkflowResponseHandling: Codeunit "Workflow Response Handling";
+    begin
+
+        case ResponseFunctionName of
+
+            WorkflowResponseHandling.CreateApprovalRequestsCode():
+                WorkflowResponseHandling.AddResponsePredecessor(WorkflowResponseHandling.CreateApprovalRequestsCode(), SendApprovalEventCode);
+
+            WorkflowResponseHandling.CancelAllApprovalRequestsCode():
+                WorkflowResponseHandling.AddResponsePredecessor(WorkflowResponseHandling.CancelAllApprovalRequestsCode(), CancelApprovalEventCode);
+        end;
+    end;
 }
