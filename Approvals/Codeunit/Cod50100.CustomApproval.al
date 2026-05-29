@@ -54,6 +54,14 @@ codeunit 50100 "Custom Approval"
         //This checkes if the workflow can be executed for the record. If not, it will show an error message to the user.
         WorkflowManagement.HandleEvent(SendApprovalEventCode, Rec);
     end;
+
+    // Handling Cancel approval event, it changes the status of the document to open and triggers the workflow.
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval", 'OnCancelStudentApprovalTestForApproval', '', false, false)]
+    local procedure RunWorkflowOnCancelApprovalRequest(var Rec: Record "Student Approval test")
+    begin
+        WorkflowManagement.HandleEvent(CancelApprovalEventCode, Rec);
+    end;
+
     //Handling Pending approval event, it changes the status of the document to pending approval and triggers the workflow.
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnSetStatusToPendingApproval', '', false, false)]
     local procedure RunWorkflowOnCancelApproval(RecRef: RecordRef; var Variant: Variant; var IsHandled: Boolean)
