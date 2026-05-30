@@ -170,8 +170,11 @@ codeunit 50100 "Custom Approval"
         Handled := true;
     end;
 
+    // =========================
+    // APPROVE
+    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
-  'OnApproveApprovalRequest', '', false, false)]
+     'OnApproveApprovalRequest', '', false, false)]
     local procedure ApproveApprovalRequest(var ApprovalEntry: Record "Approval Entry")
     var
         StudentRequest: Record "Student Approval test";
@@ -184,17 +187,17 @@ codeunit 50100 "Custom Approval"
         if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
             exit;
 
-        // ── Re-read the entry fresh from DB using the single PK field ─────────
+        // ── Re-read fresh from DB using single PK ─────────────────────────
         if not FreshEntry.Get(ApprovalEntry."Entry No.") then
             exit;
 
-        // ── Step 1: Stamp approver and timestamp ──────────────────────────────
+        // ── Step 1: Stamp approver and timestamp ──────────────────────────
         FreshEntry."Last Date-Time Modified" := CurrentDateTime();
         FreshEntry."Last Modified By User ID" := CopyStr(
             UserId(), 1, MaxStrLen(FreshEntry."Last Modified By User ID"));
         FreshEntry.Modify(true);
 
-        // ── Step 2: Write approval comment ────────────────────────────────────
+        // ── Step 2: Write approval comment ────────────────────────────────
         ApprovalCommentLine.Init();
         ApprovalCommentLine."Table ID" := FreshEntry."Table ID";
         ApprovalCommentLine."Document Type" := FreshEntry."Document Type";
@@ -213,7 +216,7 @@ codeunit 50100 "Custom Approval"
         ApprovalCommentLine."Date and Time" := CurrentDateTime();
         ApprovalCommentLine.Insert(true);
 
-        // ── Step 3: Check same-level peers still pending ──────────────────────
+        // ── Step 3: Check same-level peers still pending ──────────────────
         PendingEntries.SetRange("Table ID", FreshEntry."Table ID");
         PendingEntries.SetRange("Document No.", FreshEntry."Document No.");
         PendingEntries.SetRange("Sequence No.", FreshEntry."Sequence No.");
@@ -232,7 +235,7 @@ codeunit 50100 "Custom Approval"
             exit;
         end;
 
-        // ── Step 4: Check if next level exists ────────────────────────────────
+        // ── Step 4: Check if next level exists ────────────────────────────
         PendingEntries.Reset();
         PendingEntries.SetRange("Table ID", FreshEntry."Table ID");
         PendingEntries.SetRange("Document No.", FreshEntry."Document No.");
@@ -252,16 +255,11 @@ codeunit 50100 "Custom Approval"
             exit;
         end;
 
-        // ── Step 5: Full chain complete — workflow fires OnReleaseDocument ─────
+        // ── Step 5: Full chain complete — workflow fires OnReleaseDocument ─
     end;
 
     // =========================
-    // REJECT — COMMENT + STATUS
-    // OnRejectApprovalRequest fires AFTER BC sets the entry to Rejected.
-    // We show the comment dialog first. If the user cancels or enters
-    // nothing we throw an Error() which rolls back the entire rejection
-    // transaction — BC's own status update is also rolled back because
-    // we are still inside the same database transaction.
+    // REJECT
     // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnRejectApprovalRequest', '', false, false)]
@@ -270,6 +268,7 @@ codeunit 50100 "Custom Approval"
         StudentRequest: Record "Student Approval test";
         ApprovalCommentLine: Record "Approval Comment Line";
         SameLevelEntries: Record "Approval Entry";
+        FreshEntry: Record "Approval Entry";
         RecRef: RecordRef;
         CommentText: Text[250];
         RejectedByMsg: Label 'Rejected by %1 (Level %2) on %3.';
@@ -277,31 +276,32 @@ codeunit 50100 "Custom Approval"
         if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
             exit;
 
+        // ── Re-read fresh from DB using single PK ─────────────────────────
+        if not FreshEntry.Get(ApprovalEntry."Entry No.") then
+            exit;
+
         // ── Step 1: Force rejection comment BEFORE any writes ─────────────
-        // If the user cancels the dialog or leaves comment blank,
-        // Error() fires here which rolls back the whole transaction
-        // including BC's own Rejected status update on the entry.
-        if not GetRejectionComment(ApprovalEntry, CommentText) then
+        if not GetRejectionComment(FreshEntry, CommentText) then
             Error(RejectCommentErr);
 
         // ── Step 2: Stamp the rejection on the approval entry ─────────────
-        ApprovalEntry."Last Date-Time Modified" := CurrentDateTime();
-        ApprovalEntry."Last Modified By User ID" := CopyStr(
-            UserId(), 1, MaxStrLen(ApprovalEntry."Last Modified By User ID"));
-        ApprovalEntry.Modify(true);
+        FreshEntry."Last Date-Time Modified" := CurrentDateTime();
+        FreshEntry."Last Modified By User ID" := CopyStr(
+            UserId(), 1, MaxStrLen(FreshEntry."Last Modified By User ID"));
+        FreshEntry.Modify(true);
 
-        // ── Step 3: Persist rejection comment to Approval Comment Line ────
+        // ── Step 3: Persist rejection comment ─────────────────────────────
         ApprovalCommentLine.Init();
-        ApprovalCommentLine."Table ID" := ApprovalEntry."Table ID";
-        ApprovalCommentLine."Document Type" := ApprovalEntry."Document Type";
-        ApprovalCommentLine."Document No." := ApprovalEntry."Document No.";
-        ApprovalCommentLine."Record ID to Approve" := ApprovalEntry."Record ID to Approve";
-        ApprovalCommentLine."Workflow Step Instance ID" := ApprovalEntry."Workflow Step Instance ID";
+        ApprovalCommentLine."Table ID" := FreshEntry."Table ID";
+        ApprovalCommentLine."Document Type" := FreshEntry."Document Type";
+        ApprovalCommentLine."Document No." := FreshEntry."Document No.";
+        ApprovalCommentLine."Record ID to Approve" := FreshEntry."Record ID to Approve";
+        ApprovalCommentLine."Workflow Step Instance ID" := FreshEntry."Workflow Step Instance ID";
         ApprovalCommentLine.Comment := CopyStr(
             StrSubstNo(
                 RejectedByMsg,
-                ApprovalEntry."Approver ID",
-                ApprovalEntry."Sequence No.",
+                FreshEntry."Approver ID",
+                FreshEntry."Sequence No.",
                 Format(Today(), 0, '<Day,2>/<Month,2>/<Year4>'))
             + ' — ' + CommentText,
             1, MaxStrLen(ApprovalCommentLine.Comment));
@@ -311,9 +311,9 @@ codeunit 50100 "Custom Approval"
         ApprovalCommentLine.Insert(true);
 
         // ── Step 4: Cancel ALL other Open/Created entries on same level ───
-        SameLevelEntries.SetRange("Table ID", ApprovalEntry."Table ID");
-        SameLevelEntries.SetRange("Document No.", ApprovalEntry."Document No.");
-        SameLevelEntries.SetRange("Sequence No.", ApprovalEntry."Sequence No.");
+        SameLevelEntries.SetRange("Table ID", FreshEntry."Table ID");
+        SameLevelEntries.SetRange("Document No.", FreshEntry."Document No.");
+        SameLevelEntries.SetRange("Sequence No.", FreshEntry."Sequence No.");
         SameLevelEntries.SetFilter(
             Status, '%1|%2',
             SameLevelEntries.Status::Open,
@@ -330,9 +330,9 @@ codeunit 50100 "Custom Approval"
 
         // ── Step 5: Cancel ALL entries on ALL higher levels ───────────────
         SameLevelEntries.Reset();
-        SameLevelEntries.SetRange("Table ID", ApprovalEntry."Table ID");
-        SameLevelEntries.SetRange("Document No.", ApprovalEntry."Document No.");
-        SameLevelEntries.SetFilter("Sequence No.", '>%1', ApprovalEntry."Sequence No.");
+        SameLevelEntries.SetRange("Table ID", FreshEntry."Table ID");
+        SameLevelEntries.SetRange("Document No.", FreshEntry."Document No.");
+        SameLevelEntries.SetFilter("Sequence No.", '>%1', FreshEntry."Sequence No.");
         SameLevelEntries.SetFilter(
             Status, '%1|%2',
             SameLevelEntries.Status::Open,
@@ -348,7 +348,7 @@ codeunit 50100 "Custom Approval"
             until SameLevelEntries.Next() = 0;
 
         // ── Step 6: Set document status to Rejected ───────────────────────
-        RecRef.Get(ApprovalEntry."Record ID to Approve");
+        RecRef.Get(FreshEntry."Record ID to Approve");
         if RecRef.Number = Database::"Student Approval test" then begin
             RecRef.SetTable(StudentRequest);
             StudentRequest.Status := StudentRequest.Status::Rejected;
