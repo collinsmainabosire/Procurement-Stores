@@ -1,5 +1,7 @@
 namespace BCTRAINING.BCTRAINING;
 
+using System.Automation;
+
 page 50104 "Approval Test"
 {
     ApplicationArea = All;
@@ -83,6 +85,27 @@ page 50104 "Approval Test"
                         CustomApproval: Codeunit "Custom Approval";
                     begin
                         CustomApproval.OnCancelStudentApprovalTestForApproval(Rec);
+                    end;
+                }
+
+                action(Approvals)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approvals';
+                    ToolTip = 'View approval entries for this document.';
+                    Image = Approvals;
+
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+
+                    trigger OnAction()
+                    var
+                        ApprovalEntry: Record "Approval Entry";
+                    begin
+                        ApprovalEntry.SetRange("Table ID", Database::"Student Approval test");
+                        ApprovalEntry.SetRange("Document No.", Rec."Student No.");
+                        Page.RunModal(Page::"Approval Entries", ApprovalEntry);
                     end;
                 }
             }
