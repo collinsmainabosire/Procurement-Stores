@@ -1,8 +1,5 @@
 codeunit 50100 "Custom Approval"
 {
-    // =========================
-    // VARIABLES
-    // =========================
     var
         WorkflowManagement: Codeunit "Workflow Management";
         NoWorkflowEnabledErr: Label 'No approval workflow is enabled for this document type.';
@@ -12,9 +9,6 @@ codeunit 50100 "Custom Approval"
         NoDelegateErr: Label 'No delegate (Substitute) is configured for approver %1. Please set a Substitute in User Setup.';
         NoUserSetupErr: Label 'No User Setup found for approver %1.';
 
-    // =========================
-    // EVENT CODE FUNCTIONS
-    // =========================
     procedure SendApprovalEventCode(): Code[128]
     begin
         exit('RUNWORKFLOWONSENDSTUDENTREQUEST');
@@ -25,9 +19,6 @@ codeunit 50100 "Custom Approval"
         exit('RUNWORKFLOWONCANCELSTUDENTREQUEST');
     end;
 
-    // =========================
-    // REGISTER WORKFLOW EVENTS
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Event Handling",
      'OnAddWorkflowEventsToLibrary', '', false, false)]
     local procedure AddWorkflowEventsToLibrary()
@@ -49,9 +40,6 @@ codeunit 50100 "Custom Approval"
             false);
     end;
 
-    // =========================
-    // REGISTER WORKFLOW RESPONSES
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling",
      'OnAddWorkflowResponsesToLibrary', '', false, false)]
     local procedure AddWorkflowResponsesToLibrary()
@@ -71,9 +59,6 @@ codeunit 50100 "Custom Approval"
             'GROUP 0');
     end;
 
-    // =========================
-    // INTEGRATION EVENTS
-    // =========================
     [IntegrationEvent(false, false)]
     procedure OnSendStudentApprovalTestForApproval(var Rec: Record "Student Approval test")
     begin
@@ -84,9 +69,6 @@ codeunit 50100 "Custom Approval"
     begin
     end;
 
-    // =========================
-    // SEND FOR APPROVAL
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval",
      'OnSendStudentApprovalTestForApproval', '', false, false)]
     local procedure RunWorkflowOnSendApproval(var Rec: Record "Student Approval test")
@@ -97,14 +79,6 @@ codeunit 50100 "Custom Approval"
         WorkflowManagement.HandleEvent(SendApprovalEventCode(), Rec);
     end;
 
-    // =========================
-    // CANCEL APPROVAL
-    // Fix: After BC cancels the approval entries we explicitly
-    // set the document status back to Open via OnOpenDocument.
-    // However BC only fires OnOpenDocument when the workflow
-    // response is configured. The safest fix is to also subscribe
-    // to OnCancelStudentApprovalTestForApproval and force Open here.
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval",
      'OnCancelStudentApprovalTestForApproval', '', false, false)]
     local procedure RunWorkflowOnCancelApprovalRequest(var Rec: Record "Student Approval test")
@@ -114,17 +88,10 @@ codeunit 50100 "Custom Approval"
 
         WorkflowManagement.HandleEvent(CancelApprovalEventCode(), Rec);
 
-        // ── Force document status back to Open after cancellation ─────────
-        // BC fires the cancel workflow event but does not always trigger
-        // OnOpenDocument for custom tables. We set it directly here to
-        // guarantee the status is reset regardless of workflow response config.
         Rec.Status := Rec.Status::Open;
         Rec.Modify(true);
     end;
 
-    // =========================
-    // PENDING APPROVAL STATUS
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnSetStatusToPendingApproval', '', false, false)]
     local procedure SetPendingStatus(RecRef: RecordRef; var Variant: Variant; var IsHandled: Boolean)
@@ -142,9 +109,6 @@ codeunit 50100 "Custom Approval"
         IsHandled := true;
     end;
 
-    // =========================
-    // RELEASE — APPROVED
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling",
      'OnReleaseDocument', '', false, false)]
     local procedure ReleaseDocument(RecRef: RecordRef; var Handled: Boolean)
@@ -162,9 +126,6 @@ codeunit 50100 "Custom Approval"
         Handled := true;
     end;
 
-    // =========================
-    // OPEN DOCUMENT — CANCEL / REOPEN
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling",
      'OnOpenDocument', '', false, false)]
     local procedure OpenDocument(RecRef: RecordRef; var Handled: Boolean)
@@ -182,9 +143,6 @@ codeunit 50100 "Custom Approval"
         Handled := true;
     end;
 
-    // =========================
-    // APPROVE
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnApproveApprovalRequest', '', false, false)]
     local procedure ApproveApprovalRequest(var ApprovalEntry: Record "Approval Entry")
@@ -199,20 +157,20 @@ codeunit 50100 "Custom Approval"
         if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
             exit;
 
-        // ── Re-read fresh from DB using single PK ─────────────────────────
         if not FreshEntry.Get(ApprovalEntry."Entry No.") then
             exit;
 
-        // ── Step 1: Stamp approver and timestamp ──────────────────────────
         FreshEntry."Last Date-Time Modified" := CurrentDateTime();
         FreshEntry."Last Modified By User ID" := CopyStr(
             UserId(), 1, MaxStrLen(FreshEntry."Last Modified By User ID"));
         FreshEntry.Modify(true);
 
-        // ── Step 2: Write approval comment ────────────────────────────────
         ApprovalCommentLine.Init();
         ApprovalCommentLine."Table ID" := FreshEntry."Table ID";
-        ApprovalCommentLine."Document Type" := FreshEntry."Document Type";
+        // FIX: Use 0 integer value to avoid "can't be evaluated into type Integer" error.
+        // "Document Type" is an Option field; passing the enum symbol "::" " "" resolves
+        // to blank text which BC cannot cast to Integer internally. Use FromInteger(0) instead.
+        ApprovalCommentLine."Document Type" := 0;
         ApprovalCommentLine."Document No." := FreshEntry."Document No.";
         ApprovalCommentLine."Record ID to Approve" := FreshEntry."Record ID to Approve";
         ApprovalCommentLine."Workflow Step Instance ID" := FreshEntry."Workflow Step Instance ID";
@@ -228,7 +186,7 @@ codeunit 50100 "Custom Approval"
         ApprovalCommentLine."Date and Time" := CurrentDateTime();
         ApprovalCommentLine.Insert(true);
 
-        // ── Step 3: Check same-level peers still pending ──────────────────
+        // Check same-level peers still pending
         PendingEntries.SetRange("Table ID", FreshEntry."Table ID");
         PendingEntries.SetRange("Document No.", FreshEntry."Document No.");
         PendingEntries.SetRange("Sequence No.", FreshEntry."Sequence No.");
@@ -238,16 +196,16 @@ codeunit 50100 "Custom Approval"
             PendingEntries.Status::Created);
 
         if not PendingEntries.IsEmpty() then begin
-            RecRef.Get(FreshEntry."Record ID to Approve");
-            if RecRef.Number = Database::"Student Approval test" then begin
-                RecRef.SetTable(StudentRequest);
-                StudentRequest.Status := StudentRequest.Status::"Pending Approval";
-                StudentRequest.Modify(true);
-            end;
+            if RecRef.Get(FreshEntry."Record ID to Approve") then
+                if RecRef.Number = Database::"Student Approval test" then begin
+                    RecRef.SetTable(StudentRequest);
+                    StudentRequest.Status := StudentRequest.Status::"Pending Approval";
+                    StudentRequest.Modify(true);
+                end;
             exit;
         end;
 
-        // ── Step 4: Check if next level exists ────────────────────────────
+        // Check next level exists
         PendingEntries.Reset();
         PendingEntries.SetRange("Table ID", FreshEntry."Table ID");
         PendingEntries.SetRange("Document No.", FreshEntry."Document No.");
@@ -258,24 +216,18 @@ codeunit 50100 "Custom Approval"
             PendingEntries.Status::Created);
 
         if not PendingEntries.IsEmpty() then begin
-            RecRef.Get(FreshEntry."Record ID to Approve");
-            if RecRef.Number = Database::"Student Approval test" then begin
-                RecRef.SetTable(StudentRequest);
-                StudentRequest.Status := StudentRequest.Status::"Pending Approval";
-                StudentRequest.Modify(true);
-            end;
+            if RecRef.Get(FreshEntry."Record ID to Approve") then
+                if RecRef.Number = Database::"Student Approval test" then begin
+                    RecRef.SetTable(StudentRequest);
+                    StudentRequest.Status := StudentRequest.Status::"Pending Approval";
+                    StudentRequest.Modify(true);
+                end;
             exit;
         end;
 
-        // ── Step 5: Full chain complete — workflow fires OnReleaseDocument ─
+        // Full chain complete — workflow fires OnReleaseDocument
     end;
 
-    // =========================
-    // REJECT — MANDATORY COMMENT ONLY
-    // Removed: same-level peer cancellation, higher-level cancellation,
-    // and manual Rejected status write. BC handles entry status itself.
-    // We only enforce the comment and write it to Approval Comment Line.
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnRejectApprovalRequest', '', false, false)]
     local procedure RejectApprovalRequest(var ApprovalEntry: Record "Approval Entry")
@@ -289,18 +241,16 @@ codeunit 50100 "Custom Approval"
         if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
             exit;
 
-        // ── Re-read fresh from DB using single PK ─────────────────────────
         if not FreshEntry.Get(ApprovalEntry."Entry No.") then
             exit;
 
-        // ── Step 1: Force rejection comment — Error() rolls back if blank ─
         if not GetRejectionComment(FreshEntry, CommentText) then
             Error(RejectCommentErr);
 
-        // ── Step 2: Persist comment to Approval Comment Line ──────────────
         ApprovalCommentLine.Init();
         ApprovalCommentLine."Table ID" := FreshEntry."Table ID";
-        ApprovalCommentLine."Document Type" := FreshEntry."Document Type";
+        // FIX: same Document Type fix applied here
+        ApprovalCommentLine."Document Type" := 0;
         ApprovalCommentLine."Document No." := FreshEntry."Document No.";
         ApprovalCommentLine."Record ID to Approve" := FreshEntry."Record ID to Approve";
         ApprovalCommentLine."Workflow Step Instance ID" := FreshEntry."Workflow Step Instance ID";
@@ -310,18 +260,14 @@ codeunit 50100 "Custom Approval"
         ApprovalCommentLine."Date and Time" := CurrentDateTime();
         ApprovalCommentLine.Insert(true);
 
-        // ── Step 3: Set document status to Rejected ───────────────────────
-        RecRef.Get(FreshEntry."Record ID to Approve");
-        if RecRef.Number = Database::"Student Approval test" then begin
-            RecRef.SetTable(StudentRequest);
-            StudentRequest.Status := StudentRequest.Status::Rejected;
-            StudentRequest.Modify(true);
-        end;
+        if RecRef.Get(FreshEntry."Record ID to Approve") then
+            if RecRef.Number = Database::"Student Approval test" then begin
+                RecRef.SetTable(StudentRequest);
+                StudentRequest.Status := StudentRequest.Status::Rejected;
+                StudentRequest.Modify(true);
+            end;
     end;
 
-    // =========================
-    // DELEGATE
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnDelegateApprovalRequest', '', false, false)]
     local procedure DelegateApprovalRequest(var ApprovalEntry: Record "Approval Entry")
@@ -341,9 +287,6 @@ codeunit 50100 "Custom Approval"
         ApprovalsMgmt.DelegateApprovalRequests(ApprovalEntry);
     end;
 
-    // =========================
-    // APPROVAL ENTRY SETUP
-    // =========================
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnPopulateApprovalEntryArgument', '', false, false)]
     local procedure PopulateApprovalEntry(
@@ -358,14 +301,15 @@ codeunit 50100 "Custom Approval"
 
         RecRef.SetTable(StudentRequest);
 
-        ApprovalEntryArgument."Document Type" := ApprovalEntryArgument."Document Type"::" ";
+        // FIX: This is the primary cause of "can't be evaluated into type Integer".
+        // "::" " "" is a blank Option string that BC's internal approval engine tries
+        // to cast to Integer and fails. Use FromInteger(0) which is the safe, explicit way
+        // to set the first Option value (" ") on an Option/Enum field.
+        ApprovalEntryArgument."Document Type" := 0;
         ApprovalEntryArgument."Document No." := StudentRequest."Student No.";
         ApprovalEntryArgument."Record ID to Approve" := StudentRequest.RecordId;
     end;
 
-    // =========================
-    // NOTIFY APPROVERS
-    // =========================
     [EventSubscriber(ObjectType::Table, Database::"Approval Entry",
      'OnAfterInsertEvent', '', false, false)]
     local procedure NotifyApproverOnEntryInserted(
@@ -386,9 +330,6 @@ codeunit 50100 "Custom Approval"
         ApprovalsMgmt.CreateApprovalEntryNotification(Rec, WorkflowStepInstance);
     end;
 
-    // =========================
-    // REJECTION COMMENT DIALOG HELPER
-    // =========================
     local procedure GetRejectionComment(
         ApprovalEntry: Record "Approval Entry";
         var CommentText: Text[250]): Boolean
