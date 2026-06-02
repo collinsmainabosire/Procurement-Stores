@@ -63,6 +63,7 @@ page 50104 "Approval Test"
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
+                    // Allow sending only when document is Open
                     Enabled = Rec.Status = Rec.Status::Open;
 
                     trigger OnAction()
@@ -82,6 +83,7 @@ page 50104 "Approval Test"
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
+                    // Only visible when document is pending
                     Enabled = Rec.Status = Rec.Status::"Pending Approval";
 
                     trigger OnAction()
@@ -101,6 +103,7 @@ page 50104 "Approval Test"
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
+                    // Only enabled when document is waiting for approval
                     Enabled = Rec.Status = Rec.Status::"Pending Approval";
 
                     trigger OnAction()
@@ -115,11 +118,12 @@ page 50104 "Approval Test"
                 {
                     ApplicationArea = All;
                     Caption = 'Reject';
-                    ToolTip = 'Reject the request. You must enter a comment first.';
+                    ToolTip = 'Reject the request. A comment is mandatory.';
                     Image = Reject;
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
+                    // Only enabled when document is waiting for approval
                     Enabled = Rec.Status = Rec.Status::"Pending Approval";
 
                     trigger OnAction()
@@ -127,6 +131,27 @@ page 50104 "Approval Test"
                         CustomApproval: Codeunit "Custom Approval";
                     begin
                         CustomApproval.RejectWithComment(Rec);
+                    end;
+                }
+
+                action(Reopen)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reopen';
+                    ToolTip = 'Reopen a rejected document so it can be corrected and sent for approval again.';
+                    Image = ReOpen;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+                    // Only enabled when document has been rejected
+                    Enabled = Rec.Status = Rec.Status::Rejected;
+
+                    trigger OnAction()
+                    var
+                        CustomApproval: Codeunit "Custom Approval";
+                    begin
+                        CustomApproval.ReopenRequest(Rec);
+                        CurrPage.Update(false);
                     end;
                 }
 

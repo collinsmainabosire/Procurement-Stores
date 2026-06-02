@@ -19,6 +19,15 @@ codeunit 50100 "Custom Approval"
     // BC270   : RunModal() cannot be called inside a workflow transaction. All dialogs
     //           (e.g. rejection comment prompt) must be opened BEFORE the workflow engine
     //           is invoked. This codeunit is structured to respect that constraint.
+    //
+    // REJECTION COMMENT ENFORCEMENT:
+    //           To prevent rejection without a comment from ANY entry point
+    //           (including the built-in Approval Entries page), the
+    //           OnRejectApprovalRequest subscriber itself checks for an existing
+    //           comment before allowing the rejection to proceed. The page action
+    //           RejectWithComment saves the comment first, then calls reject.
+    //           If someone bypasses the page and rejects directly, the subscriber
+    //           blocks it with an error because no comment exists yet.
     // =========================================================================================
 
     var
@@ -29,7 +38,8 @@ codeunit 50100 "Custom Approval"
         NoDelegateErr: Label 'No delegate (Substitute) is configured for approver %1.';
         NoUserSetupErr: Label 'No User Setup found for approver %1.';
         NoOpenEntryErr: Label 'There is no open approval request for this document.';
-        NoCommentErr: Label 'You must enter a rejection comment before rejecting.';
+        NoCommentErr: Label 'You must enter a rejection comment before rejecting. Please use the Reject action on the document page.';
+        AlreadyOpenErr: Label 'This document is already open.';
 
     // =========================================================================================
     // SECTION 1: EVENT CODES
@@ -146,7 +156,7 @@ codeunit 50100 "Custom Approval"
             Error(NoOpenEntryErr);
 
         // Hand off to BC's built-in approval engine.
-        // BC will mark the entry as Approved and fire OnReleaseDocument
+        // BC will mark the entry Approved and fire OnReleaseDocument
         // once all approvers in the chain have approved.
         ApprovalsMgmt.ApproveApprovalRequests(ApprovalEntry);
     end;
@@ -156,8 +166,10 @@ codeunit 50100 "Custom Approval"
     // IMPORTANT: The rejection comment dialog (RunModal) is opened HERE,
     // BEFORE ApprovalsMgmt.RejectApprovalRequests is called. This is required
     // in BC270 because RunModal cannot be called inside a workflow transaction.
-    // Once the comment is saved, the rejection is triggered and our
-    // RejectApprovalRequest subscriber (below) sets Status to Rejected.
+    // The comment is saved to Approval Comment Line BEFORE rejection is triggered.
+    // The OnRejectApprovalRequest subscriber then checks that the comment exists
+    // before allowing the status to change — this makes the comment mandatory
+    // from ALL entry points including the built-in Approval Entries page.
     var
         ApprovalEntry: Record "Approval Entry";
         ApprovalCommentLine: Record "Approval Comment Line";
@@ -184,9 +196,10 @@ codeunit 50100 "Custom Approval"
         if CommentText = '' then
             Error(NoCommentErr);
 
-        // Step 4 — persist the rejection comment to Approval Comment Line.
-        // This table is BC's native comment store for approvals. The sender
-        // sees this comment in the ApprovalComments factbox on page 50104.
+        // Step 4 — persist the rejection comment to Approval Comment Line
+        // BEFORE calling reject. The subscriber OnRejectApprovalRequest checks
+        // for this comment and will error if it does not exist — making the
+        // comment mandatory even if someone bypasses this page action.
         ApprovalCommentLine.Init();
         ApprovalCommentLine."Table ID" := ApprovalEntry."Table ID";
         ApprovalCommentLine."Document Type" := ApprovalEntry."Document Type";
@@ -200,11 +213,26 @@ codeunit 50100 "Custom Approval"
         ApprovalCommentLine.Insert(true);
 
         // Step 5 — now trigger the rejection through BC's approval engine.
-        // This fires OnRejectApprovalRequest (subscriber below) which sets
-        // the document Status to Rejected. The workflow engine also fires
-        // OnOpenDocument if the workflow response "Open the document" is
-        // configured — our OpenDocument subscriber handles that too.
+        // This fires OnRejectApprovalRequest (subscriber below) which verifies
+        // the comment exists and then sets the document Status to Rejected.
         ApprovalsMgmt.RejectApprovalRequests(ApprovalEntry);
+    end;
+
+    procedure ReopenRequest(var Rec: Record "Student Approval test")
+    // Called from the Reopen action on page 50104.
+    // Allows a rejected document to be reset to Open status so it can
+    // be corrected and sent for approval again.
+    // Only documents with status Rejected can be reopened.
+    begin
+        if Rec.Status <> Rec.Status::Rejected then
+            Error(AlreadyOpenErr);
+
+        // Reset the document status to Open so the sender can
+        // make corrections and send for approval again.
+        Rec.Status := Rec.Status::Open;
+        Rec.Modify(true);
+
+        Message('Document has been reopened and can be sent for approval again.');
     end;
 
     // =========================================================================================
@@ -248,8 +276,7 @@ codeunit 50100 "Custom Approval"
 
     // =========================================================================================
     // SECTION 6: APPROVAL ENGINE CALLBACKS
-    // These subscribers are called by BC's internal approval engine (Approvals Mgmt.
-    // and Workflow Response Handling codeunits) during the approval lifecycle.
+    // These subscribers are called by BC's internal approval engine during the lifecycle.
     // They handle status transitions on the Student Approval test record.
     // =========================================================================================
 
@@ -323,21 +350,41 @@ codeunit 50100 "Custom Approval"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnRejectApprovalRequest', '', false, false)]
     local procedure RejectApprovalRequest(var ApprovalEntry: Record "Approval Entry")
-    // Called by BC's approval engine when RejectApprovalRequests is invoked.
-    // By the time this fires, the rejection comment has already been saved
-    // to Approval Comment Line by RejectWithComment (Section 4 above).
-    // This subscriber only sets the document Status to Rejected.
+    // Called by BC's approval engine when RejectApprovalRequests is invoked
+    // from ANY entry point — including the built-in Approval Entries page.
+    //
+    // MANDATORY COMMENT ENFORCEMENT:
+    // Before setting the status to Rejected, we check that a comment already
+    // exists in Approval Comment Line for this document. If no comment exists
+    // we throw an error and the rejection is blocked. This means:
+    //   - Via page 50104 Reject action: comment is saved first by
+    //     RejectWithComment (Section 4), so this check passes.
+    //   - Via built-in Approval Entries page Reject button: no comment has
+    //     been saved so this check fails and the rejection is blocked.
+    // This enforces the mandatory comment rule from all entry points.
     //
     // DO NOT open any dialog here. This event fires inside BC's workflow
     // transaction in BC270 and RunModal inside a transaction causes the
     // "transaction is stopped" error.
     var
         StudentRequest: Record "Student Approval test";
+        ApprovalCommentLine: Record "Approval Comment Line";
         RecRef: RecordRef;
     begin
         if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
             exit;
 
+        // Check that a comment exists before allowing rejection.
+        // RejectWithComment saves the comment before calling this.
+        // If someone rejects without going through RejectWithComment,
+        // no comment will exist and this error blocks the rejection.
+        ApprovalCommentLine.SetRange("Table ID", ApprovalEntry."Table ID");
+        ApprovalCommentLine.SetRange("Document No.", ApprovalEntry."Document No.");
+        if ApprovalCommentLine.IsEmpty() then
+            Error(NoCommentErr);
+
+        // Comment exists — safe to proceed with rejection.
+        // Set the document status to Rejected.
         if RecRef.Get(ApprovalEntry."Record ID to Approve") then
             if RecRef.Number = Database::"Student Approval test" then begin
                 RecRef.SetTable(StudentRequest);
@@ -382,7 +429,6 @@ codeunit 50100 "Custom Approval"
     // reference and throws: "The value "" can't be evaluated into type Integer."
     //
     // "Document Type" must be set using the enum symbol "::" " "" (blank/space).
-    // Using integer 0 or FromInteger(0) causes compile errors in BC270.
     var
         StudentRequest: Record "Student Approval test";
     begin
