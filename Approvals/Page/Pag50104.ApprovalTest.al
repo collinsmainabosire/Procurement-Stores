@@ -22,18 +22,26 @@ page 50104 "Approval Test"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the student number.';
                 }
-
                 field("Student Name"; Rec."Student Name")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the student name.';
                 }
-
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the approval status.';
                 }
+            }
+        }
+
+        area(FactBoxes)
+        {
+            part(ApprovalComments; "Approval Comments Factbox")
+            {
+                ApplicationArea = All;
+                SubPageLink = "Table ID"     = const(50102),
+                              "Document No." = field("Student No.");
             }
         }
     }
@@ -52,11 +60,9 @@ page 50104 "Approval Test"
                     Caption = 'Send for Approval';
                     ToolTip = 'Sends the document for approval.';
                     Image = SendApprovalRequest;
-
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
-
                     Enabled = Rec.Status = Rec.Status::Open;
 
                     trigger OnAction()
@@ -73,11 +79,9 @@ page 50104 "Approval Test"
                     Caption = 'Cancel Approval';
                     ToolTip = 'Cancels the approval request.';
                     Image = CancelApprovalRequest;
-
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
-
                     Enabled = Rec.Status = Rec.Status::"Pending Approval";
 
                     trigger OnAction()
@@ -88,13 +92,50 @@ page 50104 "Approval Test"
                     end;
                 }
 
+                action(Approve)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approve';
+                    ToolTip = 'Approve the request.';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+                    Enabled = Rec.Status = Rec.Status::"Pending Approval";
+
+                    trigger OnAction()
+                    var
+                        CustomApproval: Codeunit "Custom Approval";
+                    begin
+                        CustomApproval.ApproveRequest(Rec);
+                    end;
+                }
+
+                action(Reject)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reject';
+                    ToolTip = 'Reject the request. You must enter a comment first.';
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+                    Enabled = Rec.Status = Rec.Status::"Pending Approval";
+
+                    trigger OnAction()
+                    var
+                        CustomApproval: Codeunit "Custom Approval";
+                    begin
+                        CustomApproval.RejectWithComment(Rec);
+                    end;
+                }
+
                 action(Approvals)
                 {
                     ApplicationArea = All;
                     Caption = 'Approvals';
                     ToolTip = 'View approval entries for this document.';
                     Image = Approvals;
-
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedOnly = true;
