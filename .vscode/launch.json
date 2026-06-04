@@ -14,6 +14,7 @@
             "port": 7049,
             "breakOnError": "All",
             "launchBrowser": true,
+            "schemaUpdateMode": "ForceSync",
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
             "tenant": "default",

@@ -28,6 +28,14 @@ codeunit 50100 "Custom Approval"
     //           RejectWithComment saves the comment first, then calls reject.
     //           If someone bypasses the page and rejects directly, the subscriber
     //           blocks it with an error because no comment exists yet.
+    //
+    // OPEN RECORD FIX (BC270):
+    //           The "Open Record" button on page 654 "Requests to Approve" is controlled
+    //           by ShowRecCommentsEnabled, which is set by RecRef.Get("Record ID to Approve").
+    //           If that RecordID is empty or unresolvable the button stays disabled.
+    //           Fix: PopulateApprovalEntry now re-fetches the record from the DB via .Get()
+    //           before assigning RecordId, guaranteeing a committed, valid RecordId is stored.
+    //           OnBeforeRunWorkflowEntriesPage then opens page 50104 when the user clicks it.
     // =========================================================================================
 
     var
@@ -429,13 +437,30 @@ codeunit 50100 "Custom Approval"
     // reference and throws: "The value "" can't be evaluated into type Integer."
     //
     // "Document Type" must be set using the enum symbol "::" " "" (blank/space).
+    //
+    // FIX — "Open Record" button disabled on page 654 "Requests to Approve":
+    // The button's Enabled expression is ShowRecCommentsEnabled, which is set by
+    //   RecRef.Get(Rec."Record ID to Approve")
+    // on OnAfterGetCurrRecord. If "Record ID to Approve" is empty or stale the
+    // Get() returns false and the button stays grey.
+    // Root cause: RecRef.SetTable copies the record by value from an in-memory
+    // variant. In BC270 that in-memory RecordId is sometimes unresolvable.
+    // Fix: after SetTable, re-fetch from the database with StudentRequest.Get().
+    // This guarantees the RecordId is committed and resolvable before we store it.
     var
         StudentRequest: Record "Student Approval test";
     begin
         if RecRef.Number <> Database::"Student Approval test" then
             exit;
 
+        // Copy the record out of the RecordRef variant
         RecRef.SetTable(StudentRequest);
+
+        // *** FIX: re-fetch from the database to get a committed, valid RecordId ***
+        // Without this, RecordId may be an in-memory/stale reference that
+        // RecRef.Get() cannot resolve on page 654, leaving the button disabled.
+        if not StudentRequest.Get(StudentRequest."Student No.") then
+            exit;
 
         ApprovalEntryArgument."Table ID" := Database::"Student Approval test";
         ApprovalEntryArgument."Document Type" := ApprovalEntryArgument."Document Type"::" ";
@@ -474,5 +499,90 @@ codeunit 50100 "Custom Approval"
             exit;
 
         ApprovalsMgmt.CreateApprovalEntryNotification(Rec, WorkflowStepInstance);
+    end;
+
+    // =========================================================================================
+    // SECTION 8: OPEN RECORD NAVIGATION
+    // Intercepts BC's default navigation from page 654 "Requests to Approve"
+    // and page 9085 "Approval Entries" when the user clicks "Open Record".
+    // Without this, BC would try to open a generic list page for our custom
+    // table and either error or open nothing.
+    //
+    // IsHandled is set to TRUE immediately (before any conditional logic) so
+    // BC never falls through to its own broken default handler for custom tables.
+    //
+    // Navigation order:
+    //   1. Primary  — resolve via the stored RecordID (most reliable).
+    //   2. Fallback — RecordID failed; look up by Document No. directly.
+    //      This covers the case where the RecordID stored in the approval entry
+    //      cannot be resolved (e.g. sandbox restore, table rename, etc.).
+    // =========================================================================================
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
+     'OnBeforeRunWorkflowEntriesPage', '', false, false)]
+    local procedure OpenStudentApprovalCard(
+        RecordIDInput: RecordID;
+        TableId: Integer;
+        DocumentType: Enum "Approval Document Type";
+        DocumentNo: Code[20];
+        var IsHandled: Boolean)
+    var
+        StudentRequest: Record "Student Approval test";
+        RecRef: RecordRef;
+    begin
+        if TableId <> Database::"Student Approval test" then
+            exit;
+
+        // Set IsHandled FIRST — before any conditional logic —
+        // so BC never falls through to its own (broken) default for custom tables.
+        IsHandled := true;
+
+        // Primary: resolve via stored RecordID
+        if RecRef.Get(RecordIDInput) then begin
+            RecRef.SetTable(StudentRequest);
+            Page.Run(Page::"Approval Test", StudentRequest);
+            exit;
+        end;
+
+        // Fallback: RecordID failed — look up by Document No. directly.
+        // This handles cases where the stored RecordID cannot be resolved
+        // (e.g. after a sandbox restore or if PopulateApprovalEntry ran on
+        // an older build without the .Get() fix above).
+        if DocumentNo <> '' then
+            if StudentRequest.Get(DocumentNo) then begin
+                Page.Run(Page::"Approval Test", StudentRequest);
+                exit;
+            end;
+
+        Error('Cannot open the student request. Record could not be found (Doc No.: %1).', DocumentNo);
+    end;
+    //Section 8: Open Record Navigation
+    [EventSubscriber(ObjectType::Table, Database::"Approval Entry",
+     'OnBeforeShowRecord', '', false, false)]
+    local procedure HandleShowRecord(var ApprovalEntry: Record "Approval Entry"; var IsHandled: Boolean)
+    var
+        StudentRequest: Record "Student Approval test";
+        RecRef: RecordRef;
+    begin
+        if ApprovalEntry."Table ID" <> Database::"Student Approval test" then
+            exit;
+
+        IsHandled := true;
+
+        // Primary: resolve via stored RecordID
+        if RecRef.Get(ApprovalEntry."Record ID to Approve") then begin
+            RecRef.SetTable(StudentRequest);
+            Page.Run(Page::"Approval Test", StudentRequest);
+            exit;
+        end;
+
+        // Fallback: look up by Document No.
+        if ApprovalEntry."Document No." <> '' then
+            if StudentRequest.Get(ApprovalEntry."Document No.") then begin
+                Page.Run(Page::"Approval Test", StudentRequest);
+                exit;
+            end;
+
+        Error('Cannot open student request. Record not found (Doc No.: %1).', ApprovalEntry."Document No.");
     end;
 }
