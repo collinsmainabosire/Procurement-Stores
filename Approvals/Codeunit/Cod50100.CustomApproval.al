@@ -171,8 +171,7 @@ codeunit 50100 "Custom Approval"
     // SECTION 5: WORKFLOW EVENT SUBSCRIBERS — SEND AND CANCEL
     // =========================================================================================
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval",
-     'OnSendStudentApprovalTestForApproval', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval", 'OnSendStudentApprovalTestForApproval', '', false, false)]
     local procedure RunWorkflowOnSendApproval(var Rec: Record "Student Approval test")
     begin
         if not WorkflowManagement.CanExecuteWorkflow(Rec, SendApprovalEventCode()) then
@@ -181,8 +180,7 @@ codeunit 50100 "Custom Approval"
         WorkflowManagement.HandleEvent(SendApprovalEventCode(), Rec);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval",
-     'OnCancelStudentApprovalTestForApproval', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Custom Approval", 'OnCancelStudentApprovalTestForApproval', '', false, false)]
     local procedure RunWorkflowOnCancelApprovalRequest(var Rec: Record "Student Approval test")
     // CANCEL FIX:
     // After raising the workflow event we explicitly cancel all Open or Created
@@ -221,8 +219,7 @@ codeunit 50100 "Custom Approval"
     // SECTION 6: APPROVAL ENGINE CALLBACKS
     // =========================================================================================
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
-     'OnSetStatusToPendingApproval', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnSetStatusToPendingApproval', '', false, false)]
     local procedure SetPendingStatus(RecRef: RecordRef; var Variant: Variant; var IsHandled: Boolean)
     var
         StudentRequest: Record "Student Approval test";
@@ -238,8 +235,7 @@ codeunit 50100 "Custom Approval"
         IsHandled := true;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling",
-     'OnReleaseDocument', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnReleaseDocument', '', false, false)]
     local procedure ReleaseDocument(RecRef: RecordRef; var Handled: Boolean)
     var
         StudentRequest: Record "Student Approval test";
@@ -255,8 +251,7 @@ codeunit 50100 "Custom Approval"
         Handled := true;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling",
-     'OnOpenDocument', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnOpenDocument', '', false, false)]
     local procedure OpenDocument(RecRef: RecordRef; var Handled: Boolean)
     var
         StudentRequest: Record "Student Approval test";
@@ -296,8 +291,7 @@ codeunit 50100 "Custom Approval"
             end;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
-     'OnDelegateApprovalRequest', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnDelegateApprovalRequest', '', false, false)]
     local procedure DelegateApprovalRequest(var ApprovalEntry: Record "Approval Entry")
     var
         UserSetup: Record "User Setup";
@@ -315,8 +309,7 @@ codeunit 50100 "Custom Approval"
         ApprovalsMgmt.DelegateApprovalRequests(ApprovalEntry);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
-     'OnPopulateApprovalEntryArgument', '', false, false)]
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnPopulateApprovalEntryArgument', '', false, false)]
     local procedure PopulateApprovalEntry(
         var RecRef: RecordRef;
         var ApprovalEntryArgument: Record "Approval Entry";
@@ -346,8 +339,7 @@ codeunit 50100 "Custom Approval"
 
     [EventSubscriber(ObjectType::Table, Database::"Approval Entry",
      'OnAfterInsertEvent', '', false, false)]
-    local procedure NotifyApproverOnEntryInserted(
-        var Rec: Record "Approval Entry"; RunTrigger: Boolean)
+    local procedure NotifyApproverOnEntryInserted(var Rec: Record "Approval Entry"; RunTrigger: Boolean)
     var
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
         WorkflowStepInstance: Record "Workflow Step Instance";
@@ -404,12 +396,7 @@ codeunit 50100 "Custom Approval"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.",
      'OnBeforeRunWorkflowEntriesPage', '', false, false)]
-    local procedure OpenStudentApprovalCard(
-        RecordIDInput: RecordID;
-        TableId: Integer;
-        DocumentType: Enum "Approval Document Type";
-        DocumentNo: Code[20];
-        var IsHandled: Boolean)
+    local procedure OpenStudentApprovalCard(RecordIDInput: RecordID; TableId: Integer; DocumentType: Enum "Approval Document Type"; DocumentNo: Code[20]; var IsHandled: Boolean)
     var
         StudentRequest: Record "Student Approval test";
         RecRef: RecordRef;
