@@ -226,6 +226,9 @@ table 50110 "Application Document"
     var
         StorageHelper: Codeunit "Storage Helper";
     begin
+        if not Confirm('Are you sure you want to delete this document?') then
+            exit;
+
         // Delete physical file
         if "Document Path" <> '' then begin
             StorageHelper.DeleteFile("Document Path");
