@@ -388,19 +388,21 @@ table 50103 "Job Applicant"
 
     local procedure GenerateTemporaryPassword(): Code[20]
     var
+        Characters: Text;
         TempPassword: Text;
-        i: Integer;
-        RandomChar: Char;
+        Index: Integer;
     begin
-        // Generate 12-character random password
+        Characters := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
         TempPassword := '';
 
-        for i := 1 to 12 do begin
-            // Random uppercase or digit
-            if Random(2) = 1 then
-                TempPassword += Format(Char::TextToChar(65 + Random(25))) // A-Z
-            else
-                TempPassword += Format(Random(9)); // 0-9
+        Randomize();
+
+        for Index := 1 to 12 do begin
+            TempPassword += CopyStr(
+                Characters,
+                Random(StrLen(Characters)) + 1,
+                1);
         end;
 
         exit(CopyStr(TempPassword, 1, 20));
