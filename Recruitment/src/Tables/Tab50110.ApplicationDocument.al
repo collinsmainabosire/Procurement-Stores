@@ -243,9 +243,14 @@ table 50110 "Application Document"
         NewID: Integer;
     begin
         LastDoc.SetCurrentKey("Document ID");
-        if LastDoc.FindLast() then
-            NewID := StrToInt(CopyStr(LastDoc."Document ID", 5)) + 1
-        else
+
+        if LastDoc.FindLast() then begin
+            Evaluate(
+                NewID,
+                CopyStr(LastDoc."Document ID", 5)
+            );
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('DOC-' + PadStr(Format(NewID), 6, '0'));
