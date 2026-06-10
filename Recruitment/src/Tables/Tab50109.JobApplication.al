@@ -319,9 +319,14 @@ table 50109 "Job Application"
         NewID: Integer;
     begin
         LastApp.SetCurrentKey("Application ID");
-        if LastApp.FindLast() then
-            NewID := StrToInt(CopyStr(LastApp."Application ID", 5)) + 1
-        else
+
+        if LastApp.FindLast() then begin
+            Evaluate(
+                NewID,
+                CopyStr(LastApp."Application ID", 6) // "JAPP-" = 5 chars, so start at 6
+            );
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('JAPP-' + PadStr(Format(NewID), 6, '0'));
