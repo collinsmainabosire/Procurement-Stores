@@ -134,7 +134,11 @@ table 50114 Onboarding
         field(23; "Expected Completion Date"; Date)
         {
             DataClassification = ToBeClassified;
-            InitValue = 30; // 30 days from start
+           // 30 days from start
+            trigger OnValidate()
+            begin
+                "Expected Completion Date" := CalcDate('+30D', "Start Date");
+            end;
         }
 
         field(24; "Actual Completion Date"; Date)
