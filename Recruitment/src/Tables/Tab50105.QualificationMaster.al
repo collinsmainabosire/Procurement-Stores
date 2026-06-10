@@ -84,9 +84,11 @@ table 50105 "Qualification Master"
         NewID: Integer;
     begin
         LastQual.SetCurrentKey("Qualification ID");
-        if LastQual.FindLast() then
-            NewID := StrToInt(CopyStr(LastQual."Qualification ID", 5)) + 1
-        else
+
+        if LastQual.FindLast() then begin
+            Evaluate(NewID, CopyStr(LastQual."Qualification ID", 6));
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('QUAL-' + PadStr(Format(NewID), 6, '0'));
