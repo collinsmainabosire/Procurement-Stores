@@ -247,13 +247,14 @@ table 50103 "Job Applicant"
         LastApplicant: Record "Job Applicant";
         NewID: Integer;
     begin
-        // Generate ID like APP-001, APP-002, etc.
+        // Generate ID like APP-000001
         LastApplicant.SetCurrentKey("Applicant ID");
+
         if LastApplicant.FindLast() then begin
-            NewID := StrToInt(CopyStr(LastApplicant."Applicant ID", 5)) + 1;
-        end else begin
+            Evaluate(NewID, CopyStr(LastApplicant."Applicant ID", 5));
+            NewID := NewID + 1;
+        end else
             NewID := 1;
-        end;
 
         exit('APP-' + PadStr(Format(NewID), 6, '0'));
     end;
