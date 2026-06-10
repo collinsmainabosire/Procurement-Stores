@@ -47,37 +47,27 @@ codeunit 50101 "Password Hash Helper"
     /// <returns>True if password matches</returns>
     procedure VerifyPassword(PlainPassword: Text; StoredHash: Text): Boolean
     var
-        SaltParts: List of [Text];
+        Parts: List of [Text];
         Salt: Text;
-        Iterations: Integer;
         StoredHashValue: Text;
         ComputedHash: Text;
     begin
-        // Validate inputs
         if (PlainPassword = '') or (StoredHash = '') then
             exit(false);
 
-        // Parse the stored hash format: salt|iterations|hash
-        SaltParts := StoredHash.Split('|');
+        Parts := StoredHash.Split('|');
 
-        if SaltParts.Count() <> 3 then begin
-            LogSecurityEvent('Invalid hash format detected', StoredHash);
+        if Parts.Count() <> 2 then
             exit(false);
-        end;
 
-        Salt := SaltParts.Get(1);
-        if not Evaluate(Iterations, SaltParts.Get(2)) then begin
-            LogSecurityEvent('Invalid iteration count', StoredHash);
-            exit(false);
-        end;
-        StoredHashValue := SaltParts.Get(3);
+        Salt := Parts.Get(1);
+        StoredHashValue := Parts.Get(2);
 
-        // Hash the entered password with same salt and iterations
-        ComputedHash := HashPasswordWithSalt(PlainPassword, Salt, Iterations);
+        ComputedHash := HashPasswordWithSalt(PlainPassword, Salt);
 
-        // Compare hashes (constant-time comparison to prevent timing attacks)
         exit(ConstantTimeCompare(ComputedHash, StoredHashValue));
     end;
+
 
     /// <summary>
     /// Validate password strength
