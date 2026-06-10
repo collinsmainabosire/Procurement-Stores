@@ -163,26 +163,13 @@ codeunit 50101 "Password Hash Helper"
     /// <summary>
     /// Hash password with salt using PBKDF2
     /// </summary>
-    local procedure HashPasswordWithSalt(PlainPassword: Text; Salt: Text; Iterations: Integer): Text
+
+    local procedure HashPasswordWithSalt(PlainPassword: Text; Salt: Text): Text
     var
-        HashAlgorithmType: Option HMACMD5,HMACSHA1,HMACSHA256,HMACSHA512;
-        HashedBytes: Text;
+        Crypto: Codeunit System.Security.Encryption."Cryptography Management";
+        HashAlgorithmType: Option MD5,SHA1,SHA256,SHA384,SHA512;
     begin
-        // BC 270 supports PBKDF2 through System.Security.Cryptography
-        // We use HMACSHA256 for the underlying algorithm
-
-        // This is where BC's native cryptography function would be called
-        // For BC 270, you would use:
-        HashedBytes := System.Text.Encoding.UTF8.GetString(
-            System.Security.Cryptography.Rfc2898DeriveBytes.new(
-                PlainPassword,
-                System.Text.Encoding.UTF8.GetBytes(Salt),
-                Iterations,
-                HashAlgorithmType::HMACSHA256
-            ).GetBytes(32)
-        );
-
-        exit(HashedBytes);
+        exit(Crypto.GenerateHash(PlainPassword + Salt, HashAlgorithmType::SHA256));
     end;
     /// <summary>
     /// Constant-time string comparison to prevent timing attacks
