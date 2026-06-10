@@ -152,11 +152,7 @@ table 50104 "Job Vacancy"
             DataClassification = ToBeClassified;
             Editable = false;
 
-            trigger OnCalc()
-            begin
-                // Automatically determine if vacancy is still open
-                "Is Open" := ("Status" = "Status"::Published) and ("Closing Date" >= Today);
-            end;
+
         }
     }
 
@@ -196,9 +192,11 @@ table 50104 "Job Vacancy"
         NewID: Integer;
     begin
         LastVacancy.SetCurrentKey("Vacancy ID");
-        if LastVacancy.FindLast() then
-            NewID := StrToInt(CopyStr(LastVacancy."Vacancy ID", 5)) + 1
-        else
+
+        if LastVacancy.FindLast() then begin
+            Evaluate(NewID, CopyStr(LastVacancy."Vacancy ID", 5));
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('VAC-' + PadStr(Format(NewID), 6, '0'));
