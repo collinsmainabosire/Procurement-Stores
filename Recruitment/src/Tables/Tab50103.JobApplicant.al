@@ -5,7 +5,7 @@ table 50103 "Job Applicant"
 
     // This is the header table for job applicants
     // Think of it like a master record in BC
-    
+
     // FIELDS SECTION - Define all columns
     fields
     {
@@ -16,7 +16,7 @@ table 50103 "Job Applicant"
             // Like an Employee ID
             DataClassification = ToBeClassified;
             Editable = false; // System generates this
-            
+
             trigger OnValidate()
             begin
                 // No validation needed for ID
@@ -26,7 +26,7 @@ table 50103 "Job Applicant"
         field(2; "First Name"; Text[100])
         {
             DataClassification = ToBeClassified;
-            
+
             trigger OnValidate()
             begin
                 // Ensure not empty
@@ -38,7 +38,7 @@ table 50103 "Job Applicant"
         field(3; "Last Name"; Text[100])
         {
             DataClassification = ToBeClassified;
-            
+
             trigger OnValidate()
             begin
                 if "Last Name" = '' then
@@ -49,23 +49,22 @@ table 50103 "Job Applicant"
         field(4; "Email"; Text[100])
         {
             DataClassification = ToBeClassified;
-            
+
             trigger OnValidate()
             var
-                EmailRegex: Codeunit Regex;
+                JobApplicant: Record "Job Applicant";
             begin
-                // Basic email validation
+                // Basic email validation (lightweight, AL-friendly)
                 if "Email" <> '' then
-                    if not ("Email" like '*@*.%') then
+                    if (StrPos("Email", '@') = 0) or (StrPos("Email", '.') = 0) then
                         Error('Please enter a valid email address');
-                
-                // Check for duplicates
+
+                // Duplicate check (optimized)
                 if "Email" <> xRec."Email" then begin
-                    if JobApplicant.FindSet() then
-                        repeat
-                            if JobApplicant."Email" = "Email" then
-                                Error('This email is already registered');
-                        until JobApplicant.Next() = 0;
+                    JobApplicant.SetRange("Email", "Email");
+
+                    if JobApplicant.FindFirst() then
+                        Error('This email is already registered');
                 end;
             end;
         }
@@ -73,19 +72,39 @@ table 50103 "Job Applicant"
         field(5; "Phone Number"; Text[20])
         {
             DataClassification = ToBeClassified;
-            
+
             trigger OnValidate()
+            var
+                i: Integer;
+                ch: Char;
+                HasPlus: Boolean;
             begin
-                if "Phone Number" <> '' then
-                    if not ("Phone Number" like '+[0-9]@' or "Phone Number" like '[0-9]@') then
-                        Error('Please enter a valid phone number');
+                if "Phone Number" = '' then
+                    exit;
+
+                // Must start with + or digit
+                HasPlus := CopyStr("Phone Number", 1, 1) = '+';
+
+                for i := 1 to StrLen("Phone Number") do begin
+                    ch := "Phone Number"[i];
+
+                    if ch in ['0' .. '9'] then
+                        continue;
+
+                    if (i = 1) and (ch = '+') then
+                        continue;
+
+                    Error('Please enter a valid phone number. Only digits and optional leading + are allowed.');
+                end;
+
+                if HasPlus and (StrLen("Phone Number") = 1) then
+                    Error('Phone number cannot be just "+".');
             end;
         }
-
         field(6; "Date of Birth"; Date)
         {
             DataClassification = ToBeClassified;
-            
+
             trigger OnValidate()
             begin
                 // Ensure applicant is at least 18 years old
@@ -185,7 +204,7 @@ table 50103 "Job Applicant"
             // Primary key - must be unique
             Clustered = true; // Most important lookup
         }
-        
+
         key(Email; "Email")
         {
             // Secondary index for email lookups
@@ -205,7 +224,7 @@ table 50103 "Job Applicant"
         "Applicant ID" := GenerateApplicantID();
         "Created Date" := CurrentDateTime;
         "Modified Date" := CurrentDateTime;
-        
+
         Message('Applicant %1 created successfully', "Applicant ID");
     end;
 
@@ -235,7 +254,7 @@ table 50103 "Job Applicant"
         end else begin
             NewID := 1;
         end;
-        
+
         exit('APP-' + PadStr(Format(NewID), 6, '0'));
     end;
 
@@ -247,7 +266,7 @@ table 50103 "Job Applicant"
         // Delete qualifications
         ApplicantQualification.SetRange("Applicant ID", "Applicant ID");
         ApplicantQualification.DeleteAll();
-        
+
         // Delete applications (will cascade delete documents, interviews, etc.)
         JobApplication.SetRange("Applicant ID", "Applicant ID");
         JobApplication.DeleteAll();
