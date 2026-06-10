@@ -134,7 +134,7 @@ table 50114 Onboarding
         field(23; "Expected Completion Date"; Date)
         {
             DataClassification = ToBeClassified;
-           // 30 days from start
+            // 30 days from start
             trigger OnValidate()
             begin
                 "Expected Completion Date" := CalcDate('+30D', "Start Date");
@@ -182,14 +182,6 @@ table 50114 Onboarding
             DataClassification = ToBeClassified;
             Editable = false;
             DecimalPlaces = 0;
-
-            trigger OnCalc()
-            begin
-                if "Total Checklist Items" > 0 then
-                    "Completion %" := ("Checklist Items Completed" / "Total Checklist Items") * 100
-                else
-                    "Completion %" := 0;
-            end;
         }
     }
 
@@ -244,5 +236,14 @@ table 50114 Onboarding
 
     var
         Onboarding: Record "Onboarding";
+
+    procedure CalcCompletionPercentage()
+    begin
+        if "Total Checklist Items" > 0 then
+            "Completion %" :=
+                ("Checklist Items Completed" / "Total Checklist Items") * 100
+        else
+            "Completion %" := 0;
+    end;
 }
 
