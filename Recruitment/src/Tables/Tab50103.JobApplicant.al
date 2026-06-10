@@ -164,10 +164,16 @@ table 50103 "Job Applicant"
             DataClassification = ToBeClassified;
         }
 
-        field(15; "Password Hash"; Text[255])
+        field(15; "Password Hash"; Text[500])
         {
-            DataClassification = ToBeClassified;
-            Editable = false;
+            //DataClassification = Sensitive;
+            Editable = false; // Never directly edit
+
+            trigger OnValidate()
+            begin
+                // This should NEVER be called directly
+                Error('Use SetPassword() procedure instead');
+            end;
         }
 
         field(16; "Address"; Text[200])
@@ -193,6 +199,32 @@ table 50103 "Job Applicant"
         field(20; "Portfolio URL"; Text[200])
         {
             DataClassification = ToBeClassified;
+        }
+        field(21; "Password Must Change"; Boolean)
+        {
+            // Force password change on first login
+            InitValue = true;
+        }
+
+        field(22; "Last Password Changed"; DateTime)
+        {
+            Editable = false;
+        }
+
+        field(23; "Account Locked"; Boolean)
+        {
+            // Lock account after 5 failed login attempts
+            InitValue = false;
+        }
+
+        field(24; "Failed Login Attempts"; Integer)
+        {
+            InitValue = 0;
+        }
+
+        field(25; "Last Login Date"; DateTime)
+        {
+            Editable = false;
         }
     }
 
@@ -277,5 +309,100 @@ table 50103 "Job Applicant"
     begin
         // Helper method to get full name
         exit("First Name" + ' ' + "Last Name");
+    end;
+
+    procedure SetPassword(NewPassword: Text)
+    var
+        PasswordHashHelper: Codeunit "Password Hash Helper";
+        ValidationError: Text;
+    begin
+        // Validate password strength FIRST
+        ValidationError := PasswordHashHelper.ValidatePasswordStrength(NewPassword);
+
+        if ValidationError <> '' then
+            Error(ValidationError);
+
+        // Hash and store
+        "Password Hash" := PasswordHashHelper.HashPassword(NewPassword);
+        "Last Password Changed" := CurrentDateTime;
+        "Password Must Change" := false;
+        "Failed Login Attempts" := 0; // Reset failed attempts
+        "Account Locked" := false; // Unlock account
+
+        Modify();
+
+        Message('Password has been set successfully. You can now login.');
+    end;
+
+    procedure VerifyPassword(EnteredPassword: Text): Boolean
+    var
+        PasswordHashHelper: Codeunit "Password Hash Helper";
+    begin
+        // Check if account is locked
+        if "Account Locked" then begin
+            Error('This account is locked. Please contact administrator.');
+        end;
+
+        // Verify the password
+        if not PasswordHashHelper.VerifyPassword(EnteredPassword, "Password Hash") then begin
+            // Increment failed attempts
+            "Failed Login Attempts" += 1;
+
+            // Lock account after 5 failed attempts
+            if "Failed Login Attempts" >= 5 then begin
+                "Account Locked" := true;
+                Modify();
+                Error('Account locked due to too many failed login attempts. Contact administrator.');
+            end;
+
+            Modify();
+            exit(false);
+        end;
+
+        // Successful login - reset failed attempts and update last login
+        "Failed Login Attempts" := 0;
+        "Last Login Date" := CurrentDateTime;
+        Modify();
+
+        exit(true);
+    end;
+
+    procedure ResetPassword(): Code[20]
+    var
+        TempPassword: Code[20];
+    begin
+        // Generate temporary password
+        TempPassword := GenerateTemporaryPassword();
+
+        // Set the password
+        SetPassword(TempPassword);
+
+        // Mark that password must be changed on next login
+        "Password Must Change" := true;
+        Modify();
+
+        // In real scenario, send email with temp password
+
+        exit(TempPassword);
+    end;
+
+    local procedure GenerateTemporaryPassword(): Code[20]
+    var
+        TempPassword: Text;
+        i: Integer;
+        RandomChar: Char;
+    begin
+        // Generate 12-character random password
+        TempPassword := '';
+
+        for i := 1 to 12 do begin
+            // Random uppercase or digit
+            if Random(2) = 1 then
+                TempPassword += Format(Char::TextToChar(65 + Random(25))) // A-Z
+            else
+                TempPassword += Format(Random(9)); // 0-9
+        end;
+
+        exit(CopyStr(TempPassword, 1, 20));
     end;
 }
