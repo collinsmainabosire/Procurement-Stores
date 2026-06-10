@@ -213,9 +213,14 @@ table 50114 Onboarding
         NewID: Integer;
     begin
         LastOnboarding.SetCurrentKey("Onboarding ID");
-        if LastOnboarding.FindLast() then
-            NewID := StrToInt(CopyStr(LastOnboarding."Onboarding ID", 5)) + 1
-        else
+
+        if LastOnboarding.FindLast() then begin
+            Evaluate(
+                NewID,
+                CopyStr(LastOnboarding."Onboarding ID", 5)
+            );
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('ONB-' + PadStr(Format(NewID), 6, '0'));
