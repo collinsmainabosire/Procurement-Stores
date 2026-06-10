@@ -68,17 +68,11 @@ table 50112 "Interview Score"
             DataClassification = ToBeClassified;
             // Interviewer comments on this score
         }
-
         field(7; "Weighted Score"; Decimal)
         {
             DataClassification = ToBeClassified;
             Editable = false;
             DecimalPlaces = 2;
-
-            trigger OnCalc()
-            begin
-                "Weighted Score" := ("Score Value" * "Weight %") / 100;
-            end;
         }
 
         field(8; "Grade"; Text[10])
@@ -150,4 +144,9 @@ table 50112 "Interview Score"
 
     var
         Interview: Record "Interview";
+
+    procedure CalcWeightedScore()
+    begin
+        "Weighted Score" := ("Score Value" * "Weight %") / 100;
+    end;
 }
