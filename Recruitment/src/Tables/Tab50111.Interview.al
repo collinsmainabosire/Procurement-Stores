@@ -267,9 +267,14 @@ table 50111 Interview
         NewID: Integer;
     begin
         LastInterview.SetCurrentKey("Interview ID");
-        if LastInterview.FindLast() then
-            NewID := StrToInt(CopyStr(LastInterview."Interview ID", 5)) + 1
-        else
+
+        if LastInterview.FindLast() then begin
+            Evaluate(
+                NewID,
+                CopyStr(LastInterview."Interview ID", 5)
+            );
+            NewID := NewID + 1;
+        end else
             NewID := 1;
 
         exit('INT-' + PadStr(Format(NewID), 6, '0'));
