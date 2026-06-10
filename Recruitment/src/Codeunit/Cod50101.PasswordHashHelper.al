@@ -13,30 +13,20 @@ codeunit 50101 "Password Hash Helper"
     /// <returns>Hashed password string</returns>
     procedure HashPassword(PlainPassword: Text): Text
     var
-        HashAlgorithmType: Option HMACMD5,HMACSHA1,HMACSHA256,HMACSHA512;
         Salt: Text;
-        Iterations: Integer;
         HashedPassword: Text;
     begin
-        // Validate input
         if PlainPassword = '' then
             Error('Password cannot be empty');
 
         if StrLen(PlainPassword) < 8 then
             Error('Password must be at least 8 characters long');
 
-        // Generate a random salt (BC 270 supports this)
         Salt := GenerateSalt();
 
-        // Use PBKDF2 for hashing (industry standard)
-        // 100,000 iterations = slow enough to prevent brute force
-        Iterations := 100000;
+        HashedPassword := HashPasswordWithSalt(PlainPassword, Salt);
 
-        // Hash the password + salt
-        HashedPassword := HashPasswordWithSalt(PlainPassword, Salt, Iterations);
-
-        // Return format: salt|iterations|hash
-        exit(Salt + '|' + Format(Iterations) + '|' + HashedPassword);
+        exit(Salt + '|' + HashedPassword);
     end;
 
     /// <summary>
