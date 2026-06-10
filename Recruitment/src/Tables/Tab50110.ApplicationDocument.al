@@ -223,11 +223,8 @@ table 50110 "Application Document"
     end;
 
     trigger OnDelete()
-    var
-        StorageHelper: Codeunit "Storage Helper";
     begin
-        if "Document Path" <> '' then
-            StorageHelper.DeleteFile("Document Path");
+        Clear("Document Path");
     end;
 
     local procedure GenerateDocumentID(): Code[20]
