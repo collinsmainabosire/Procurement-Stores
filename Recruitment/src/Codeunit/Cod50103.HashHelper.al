@@ -12,19 +12,22 @@ codeunit 50103 "Hash Helper"
     // MAIN PROCEDURES
     // ============================================
 
-    local procedure ReadStreamAsBase64(InS: InStream): Text
+    /// <summary>
+    /// Calculate SHA256 hash of a Blob using CryptographyManagement
+    /// </summary>
+    /// <param name="FileContent">The file blob to hash</param>
+    /// <returns>SHA256 hash string in hex format</returns>
+    procedure CalculateFileSHA256Hash(FileContent: Blob): Text
     var
-        TempBlob: Codeunit "Temp Blob";
-        OutS: OutStream;
-        Result: Text;
+        CryptographyMgt: Codeunit "Cryptography Management";
+        InStr: InStream;
+        HashValue: Text;
     begin
-        TempBlob.CreateOutStream(OutS);
-        CopyStream(OutS, InS);
-
-        TempBlob.CreateInStream(InS);
-        InS.ReadText(Result);
-
-        exit(Result);
+        // FIX: Use CryptographyManagement codeunit — the correct BC approach.
+        // System.Security.Cryptography is NOT valid AL syntax.
+        FileContent.CreateInStream(InStr);
+        HashValue := CryptographyMgt.GenerateHash(InStr, 2); // 2 = SHA256
+        exit(HashValue);
     end;
 
     /// <summary>
@@ -34,16 +37,16 @@ codeunit 50103 "Hash Helper"
     /// <returns>SHA256 hash string in hex format</returns>
     procedure CalculateTextSHA256Hash(TextContent: Text): Text
     var
-        Encoding: System.Text.Encoding;
-        FileBlob: Blob;
+        TempBlob: Codeunit "Temp Blob";
+        OutStr: OutStream;
     begin
-        // Convert text to blob
-        Encoding := System.Text.Encoding.UTF8;
+        // FIX: Removed invalid System.Text.Encoding reference.
+        // FIX: ConvertTextToBlob now uses var parameter (Blob cannot be returned by value).
+        TempBlob.CreateOutStream(OutStr, TextEncoding::UTF8);
+        OutStr.WriteText(TextContent);
 
-        FileBlob := ConvertTextToBlob(TextContent);
-
-        // Calculate hash
-        exit(CalculateFileSHA256Hash(FileBlob));
+        // Reuse CalculateFileSHA256Hash via TempBlob
+        exit(CalculateTempBlobSHA256Hash(TempBlob));
     end;
 
     /// <summary>
@@ -53,27 +56,14 @@ codeunit 50103 "Hash Helper"
     /// <returns>MD5 hash string in hex format</returns>
     procedure CalculateFileMD5Hash(FileContent: Blob): Text
     var
-        HashAlgorithm: System.Security.Cryptography.HashAlgorithm;
-        HashBytes: array of Byte;
-        HashHex: Text;
-        i: Integer;
+        CryptographyMgt: Codeunit "Cryptography Management";
+        InStr: InStream;
     begin
-        // Create MD5 hash algorithm
-        HashAlgorithm := System.Security.Cryptography.MD5.Create();
-
-        // Get bytes from blob
-        HashBytes := FileContent.GetByteArray();
-
-        // Calculate hash
-        HashBytes := HashAlgorithm.ComputeHash(HashBytes);
-
-        // Convert to hex string
-        HashHex := '';
-        for i := 1 to ArrayLen(HashBytes) do begin
-            HashHex += PadStr(Format(HashBytes[i], 0, '<Hex>'), 2, '0');
-        end;
-
-        exit(HashHex);
+        // FIX: System.Security.Cryptography.MD5.Create() is NOT valid AL.
+        // FIX: Blob.GetByteArray() does not exist in AL.
+        // Use CryptographyManagement.GenerateHash with HashAlgorithmType 3 = MD5.
+        FileContent.CreateInStream(InStr);
+        exit(CryptographyMgt.GenerateHash(InStr, 3)); // 3 = MD5
     end;
 
     /// <summary>
@@ -93,7 +83,7 @@ codeunit 50103 "Hash Helper"
             'MD5':
                 CurrentHash := CalculateFileMD5Hash(FileContent);
             else
-                Error('Unknown hash type: ' + HashType);
+                Error('Unknown hash type: %1', HashType);
         end;
 
         // Compare hashes (case-insensitive)
@@ -111,21 +101,16 @@ codeunit 50103 "Hash Helper"
         ApplicationDoc: Record "Application Document";
         FileHash: Text;
     begin
-        // Calculate hash of file
         FileHash := CalculateFileSHA256Hash(FileContent);
 
-        // Search for existing file with same hash
-        ApplicationDoc.SetFilter("Hash Value", FileHash);
+        ApplicationDoc.SetRange("Hash Value", FileHash);
 
         if ExcludeDocumentID <> '' then
             ApplicationDoc.SetFilter("Document ID", '<>%1', ExcludeDocumentID);
 
-        if ApplicationDoc.FindFirst() then begin
-            // Duplicate found!
+        if ApplicationDoc.FindFirst() then
             exit(ApplicationDoc."Document ID");
-        end;
 
-        // No duplicate
         exit('');
     end;
 
@@ -141,16 +126,13 @@ codeunit 50103 "Hash Helper"
         FileExtension: Text;
         NewFileName: Text;
     begin
-        // Calculate hash
         FileHash := CalculateFileSHA256Hash(FileContent);
-
-        // Get file extension
         FileExtension := ExtractFileExtension(OriginalFileName);
 
-        // Generate new name: first 12 chars of hash + timestamp + extension
+        // First 12 chars of hash + timestamp + extension
         // Example: a1b2c3d4e5f6_20240115_143025.pdf
         NewFileName := CopyStr(FileHash, 1, 12) + '_' +
-                       Format(CurrentDateTime, 0, '<Year4><Month,2><Day,2>_<Hour24,2><Minute,2><Second,2>') +
+                       Format(CurrentDateTime, 0, '<Year4><Month,2><Day,2>_<Hours24,2><Minutes,2><Seconds,2>') +
                        '.' + FileExtension;
 
         exit(NewFileName);
@@ -169,7 +151,6 @@ codeunit 50103 "Hash Helper"
     begin
         Hash1 := CalculateFileSHA256Hash(File1);
         Hash2 := CalculateFileSHA256Hash(File2);
-
         exit(Hash1 = Hash2);
     end;
 
@@ -179,15 +160,10 @@ codeunit 50103 "Hash Helper"
     /// <param name="FilePath">Full file path</param>
     /// <returns>SHA256 hash of file</returns>
     procedure GetFileHashFromPath(FilePath: Text): Text
-    var
-        FileContent: Blob;
-        InStream: InStream;
     begin
-        // Read file into blob
-        // Note: This requires file system access
-        // In real BC, you'd use File.ReadAsBlob() or similar
-
-        exit(''); // Placeholder
+        // Placeholder: File system access requires server-side file handling.
+        // In OnPrem BC, use File codeunit; in SaaS this is not supported.
+        exit('');
     end;
 
     /// <summary>
@@ -211,16 +187,14 @@ codeunit 50103 "Hash Helper"
                 exit(false);
         end;
 
-        // Check length
         if StrLen(HashValue) <> ExpectedLength then
             exit(false);
 
-        // Check all characters are hex (0-9, A-F)
         for i := 1 to StrLen(HashValue) do begin
             Char := HashValue[i];
-            if not ((Char >= '0' and Char <= '9') or
-                    (Char >= 'A' and Char <= 'F') or
-                    (Char >= 'a' and Char <= 'f')) then
+            if not (((Char >= '0') and (Char <= '9')) or
+                    ((Char >= 'A') and (Char <= 'F')) or
+                    ((Char >= 'a') and (Char <= 'f'))) then
                 exit(false);
         end;
 
@@ -232,16 +206,17 @@ codeunit 50103 "Hash Helper"
     // ============================================
 
     /// <summary>
-    /// Convert text to blob
+    /// Internal helper: hash a TempBlob via SHA256
+    /// FIX: Blob cannot be returned by value from a procedure in AL.
+    /// This avoids that by working directly with TempBlob codeunit.
     /// </summary>
-    local procedure ConvertTextToBlob(TextContent: Text): Blob
+    local procedure CalculateTempBlobSHA256Hash(var TempBlob: Codeunit "Temp Blob"): Text
     var
-        FileBlob: Blob;
-        OutStream: OutStream;
+        CryptographyMgt: Codeunit "Cryptography Management";
+        InStr: InStream;
     begin
-        FileBlob.CreateOutStream(OutStream, TextEncoding::UTF8);
-        OutStream.WriteText(TextContent);
-        exit(FileBlob);
+        TempBlob.CreateInStream(InStr);
+        exit(CryptographyMgt.GenerateHash(InStr, 2)); // 2 = SHA256
     end;
 
     /// <summary>
@@ -259,41 +234,23 @@ codeunit 50103 "Hash Helper"
     end;
 
     /// <summary>
-    /// Convert byte array to hex string
+    /// Convert byte array to hex string (left-padded per byte)
+    /// FIX: Original used PadStr which pads RIGHT, not left — wrong for hex bytes.
     /// </summary>
-    local procedure ByteArrayToHex(ByteArray: array of Byte): Text
+    local procedure ByteArrayToHex(ByteArray: array[64] of Byte): Text
     var
         HexString: Text;
+        ByteHex: Text;
         i: Integer;
     begin
         HexString := '';
         for i := 1 to ArrayLen(ByteArray) do begin
-            HexString += PadStr(Format(ByteArray[i], 0, '<Hex>'), 2, '0');
+            ByteHex := Format(ByteArray[i], 0, '<Hex>');
+            // Left-pad with '0' if only one character
+            if StrLen(ByteHex) = 1 then
+                ByteHex := '0' + ByteHex;
+            HexString += ByteHex;
         end;
         exit(HexString);
-    end;
-
-    /// <summary>
-    /// Convert hex string to byte array
-    /// </summary>
-    local procedure HexToByteArray(HexString: Text): array of Byte
-    var
-        ByteArray: array of Byte;
-        i: Integer;
-        HexPair: Text;
-        ByteValue: Integer;
-    begin
-        if StrLen(HexString) mod 2 <> 0 then
-            Error('Invalid hex string length');
-
-        for i := 1 to StrLen(HexString) / 2 do begin
-            HexPair := CopyStr(HexString, (i - 1) * 2 + 1, 2);
-            if Evaluate(ByteValue, HexPair, 16) then begin
-                ArrayLen(ByteArray, i);
-                ByteArray[i] := ByteValue;
-            end;
-        end;
-
-        exit(ByteArray);
     end;
 }
