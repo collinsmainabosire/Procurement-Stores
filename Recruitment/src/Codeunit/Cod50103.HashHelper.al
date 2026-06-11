@@ -1,5 +1,8 @@
 namespace BCTRAINING.BCTRAINING;
 
+using System.Security.Encryption;
+using System.Utilities;
+
 codeunit 50103 "Hash Helper"
 {
     // This codeunit handles file hashing and integrity verification
@@ -17,17 +20,15 @@ codeunit 50103 "Hash Helper"
     /// </summary>
     /// <param name="FileContent">The file blob to hash</param>
     /// <returns>SHA256 hash string in hex format</returns>
-    procedure CalculateFileSHA256Hash(FileContent: Blob): Text
+    procedure CalculateFileSHA256Hash(var FileContent: Blob): Text
     var
         CryptographyMgt: Codeunit "Cryptography Management";
         InStr: InStream;
-        HashValue: Text;
     begin
-        // FIX: Use CryptographyManagement codeunit — the correct BC approach.
-        // System.Security.Cryptography is NOT valid AL syntax.
+        // Blob must be passed by var in AL.
+        // GenerateHash requires the HashAlgorithmType enum, not an integer.
         FileContent.CreateInStream(InStr);
-        HashValue := CryptographyMgt.GenerateHash(InStr, 2); // 2 = SHA256
-        exit(HashValue);
+        exit(CryptographyMgt.GenerateHash(InStr, Enum::"Hash Algorithm"::SHA256));
     end;
 
     /// <summary>
@@ -54,16 +55,15 @@ codeunit 50103 "Hash Helper"
     /// </summary>
     /// <param name="FileContent">The file blob to hash</param>
     /// <returns>MD5 hash string in hex format</returns>
-    procedure CalculateFileMD5Hash(FileContent: Blob): Text
+    procedure CalculateFileMD5Hash(var FileContent: Blob): Text
     var
         CryptographyMgt: Codeunit "Cryptography Management";
         InStr: InStream;
     begin
-        // FIX: System.Security.Cryptography.MD5.Create() is NOT valid AL.
-        // FIX: Blob.GetByteArray() does not exist in AL.
-        // Use CryptographyManagement.GenerateHash with HashAlgorithmType 3 = MD5.
         FileContent.CreateInStream(InStr);
-        exit(CryptographyMgt.GenerateHash(InStr, 3)); // 3 = MD5
+#pragma warning disable AL0603
+        exit(CryptographyMgt.GenerateHash(InStr, Enum::"Hash Algorithm"::MD5));
+#pragma warning restore AL0603
     end;
 
     /// <summary>
@@ -73,7 +73,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="StoredHash">The previously calculated hash</param>
     /// <param name="HashType">Type of hash: SHA256 or MD5</param>
     /// <returns>True if file hasn't changed</returns>
-    procedure VerifyFileIntegrity(FileContent: Blob; StoredHash: Text; HashType: Text): Boolean
+    procedure VerifyFileIntegrity(var FileContent: Blob; StoredHash: Text; HashType: Text): Boolean
     var
         CurrentHash: Text;
     begin
@@ -96,7 +96,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="FileContent">The file content to check</param>
     /// <param name="ExcludeDocumentID">Document ID to exclude from search (optional)</param>
     /// <returns>Document ID of duplicate, or blank if not found</returns>
-    procedure CheckForDuplicateFile(FileContent: Blob; ExcludeDocumentID: Code[20]): Code[20]
+    procedure CheckForDuplicateFile(var FileContent: Blob; ExcludeDocumentID: Code[20]): Code[20]
     var
         ApplicationDoc: Record "Application Document";
         FileHash: Text;
@@ -120,7 +120,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="OriginalFileName">Original filename</param>
     /// <param name="FileContent">File content</param>
     /// <returns>New unique filename based on hash</returns>
-    procedure GenerateHashBasedFileName(OriginalFileName: Text; FileContent: Blob): Text
+    procedure GenerateHashBasedFileName(OriginalFileName: Text; var FileContent: Blob): Text
     var
         FileHash: Text;
         FileExtension: Text;
@@ -144,7 +144,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="File1">First file content</param>
     /// <param name="File2">Second file content</param>
     /// <returns>True if files are identical</returns>
-    procedure CompareFiles(File1: Blob; File2: Blob): Boolean
+    procedure CompareFiles(var File1: Blob; var File2: Blob): Boolean
     var
         Hash1: Text;
         Hash2: Text;
