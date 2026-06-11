@@ -27,7 +27,7 @@ codeunit 50103 "Hash Helper"
     begin
         // Blob must be passed by var in AL.
         // GenerateHash requires the HashAlgorithmType enum, not an integer.
-        FileContent.CreateInStream(InStr);
+        FileContent."File Content".CreateInStream(InStr);
         exit(CryptographyMgt.GenerateHash(InStr, Enum::"Hash Algorithm"::SHA256));
     end;
 
@@ -60,7 +60,7 @@ codeunit 50103 "Hash Helper"
         CryptographyMgt: Codeunit "Cryptography Management";
         InStr: InStream;
     begin
-        FileContent.CreateInStream(InStr);
+        FileContent."File Content".CreateInStream(InStr);
 #pragma warning disable AL0603
         exit(CryptographyMgt.GenerateHash(InStr, Enum::"Hash Algorithm"::MD5));
 #pragma warning restore AL0603
