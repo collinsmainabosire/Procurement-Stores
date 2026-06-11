@@ -262,11 +262,8 @@ table 50110 "Application Document"
     end;
 
     local procedure GenerateFileHash()
-    var
-        HashHelper: Codeunit "Hash Helper";
     begin
-        // TODO: Implement when we create Hash Helper codeunit
-        "Hash Value" := 'TO_BE_IMPLEMENTED';
+        "Hash Value" := CalculateFileSHA256Hash();
     end;
 
     procedure MarkAsReviewed(ReviewComments: Text)
