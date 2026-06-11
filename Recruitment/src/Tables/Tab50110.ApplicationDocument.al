@@ -323,4 +323,24 @@ table 50110 "Application Document"
 
     var
         StorageHelper: Codeunit "Storage Helper";
+
+    local procedure CalculateFileSHA256Hash(): Text
+    var
+        CryptographyMgt: Codeunit "Cryptography Management";
+        InStr: InStream;
+    begin
+        CalcFields("File Content");
+
+        if not "File Content".HasValue() then
+            exit('');
+
+        "File Content".CreateInStream(InStr);
+
+        exit(
+            CryptographyMgt.GenerateHash(
+                InStr,
+                Enum::"Hash Algorithm"::SHA256
+            )
+        );
+    end;
 }
