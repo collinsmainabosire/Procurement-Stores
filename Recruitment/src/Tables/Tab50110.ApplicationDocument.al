@@ -333,11 +333,12 @@ table 50110 "Application Document"
 
         "File Content".CreateInStream(InStr);
 
-        exit(
-            CryptographyMgt.GenerateHash(
-                InStr,
-                Enum::"Hash Algorithm"::SHA256
-            )
-        );
+        exit(CryptographyMgt.GenerateHash(InStr, Enum::"Hash Algorithm"::SHA256));
+    end;
+
+    procedure UpdateHash()
+    begin
+        "Hash Value" := CalculateFileSHA256Hash();
+        Modify();
     end;
 }

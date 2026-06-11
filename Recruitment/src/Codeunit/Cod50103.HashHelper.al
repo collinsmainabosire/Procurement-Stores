@@ -20,7 +20,7 @@ codeunit 50103 "Hash Helper"
     /// </summary>
     /// <param name="FileContent">The file blob to hash</param>
     /// <returns>SHA256 hash string in hex format</returns>
-    procedure CalculateFileSHA256Hash(var FileContent: Blob): Text
+    procedure CalculateFileSHA256Hash(var FileContent: Record "Application Document"): Text
     var
         CryptographyMgt: Codeunit "Cryptography Management";
         InStr: InStream;
@@ -55,7 +55,7 @@ codeunit 50103 "Hash Helper"
     /// </summary>
     /// <param name="FileContent">The file blob to hash</param>
     /// <returns>MD5 hash string in hex format</returns>
-    procedure CalculateFileMD5Hash(var FileContent: Blob): Text
+    procedure CalculateFileMD5Hash(var FileContent: Record "Application Document"): Text
     var
         CryptographyMgt: Codeunit "Cryptography Management";
         InStr: InStream;
@@ -73,7 +73,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="StoredHash">The previously calculated hash</param>
     /// <param name="HashType">Type of hash: SHA256 or MD5</param>
     /// <returns>True if file hasn't changed</returns>
-    procedure VerifyFileIntegrity(var FileContent: Blob; StoredHash: Text; HashType: Text): Boolean
+    procedure VerifyFileIntegrity(var FileContent: Record "Application Document"; StoredHash: Text; HashType: Text): Boolean
     var
         CurrentHash: Text;
     begin
@@ -96,7 +96,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="FileContent">The file content to check</param>
     /// <param name="ExcludeDocumentID">Document ID to exclude from search (optional)</param>
     /// <returns>Document ID of duplicate, or blank if not found</returns>
-    procedure CheckForDuplicateFile(var FileContent: Blob; ExcludeDocumentID: Code[20]): Code[20]
+    procedure CheckForDuplicateFile(var FileContent: Record "Application Document"; ExcludeDocumentID: Code[20]): Code[20]
     var
         ApplicationDoc: Record "Application Document";
         FileHash: Text;
@@ -120,7 +120,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="OriginalFileName">Original filename</param>
     /// <param name="FileContent">File content</param>
     /// <returns>New unique filename based on hash</returns>
-    procedure GenerateHashBasedFileName(OriginalFileName: Text; var FileContent: Blob): Text
+    procedure GenerateHashBasedFileName(OriginalFileName: Text; var FileContent: Record "Application Document"): Text
     var
         FileHash: Text;
         FileExtension: Text;
@@ -144,7 +144,7 @@ codeunit 50103 "Hash Helper"
     /// <param name="File1">First file content</param>
     /// <param name="File2">Second file content</param>
     /// <returns>True if files are identical</returns>
-    procedure CompareFiles(var File1: Blob; var File2: Blob): Boolean
+    procedure CompareFiles(var File1: Record "Application Document"; var File2: Record "Application Document"): Boolean
     var
         Hash1: Text;
         Hash2: Text;
