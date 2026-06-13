@@ -1,4 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
+using Microsoft.HumanResources.Employee;
+using System.Email;
 
 codeunit 50106 "Loan Notification Management"
 {
@@ -212,7 +214,7 @@ codeunit 50106 "Loan Notification Management"
     /// </summary>
     local procedure SendEmail(RecipientEmail: Text; Subject: Text; Body: Text)
     var
-        Email: Codeunit Email;
+        Email: Codeunit  Email;
         EmailMessage: Codeunit "Email Message";
     begin
         EmailMessage.Create(RecipientEmail, Subject, Body);
