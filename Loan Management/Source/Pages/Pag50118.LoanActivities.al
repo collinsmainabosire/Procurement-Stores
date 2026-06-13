@@ -29,7 +29,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::"Pending Approval");
-                        Page.Run(Page::"Employee Loan List", LoanHeader);
+                        Page.Run(Page::"Employees Loan List", LoanHeader);
                     end;
                 }
 
@@ -44,7 +44,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Approved);
-                        Page.Run(Page::"Employee Loan List", LoanHeader);
+                        Page.Run(Page::"Employees Loan List", LoanHeader);
                     end;
                 }
             }
@@ -64,7 +64,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Disbursed);
-                        Page.Run(Page::"Employee Loan List", LoanHeader);
+                        Page.Run(Page::"Employees Loan List", LoanHeader);
                     end;
                 }
 
@@ -129,7 +129,7 @@ page 50118 "Loan Activities"
                         MonthEnd := CalcDate('<CM>', Today);
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Closed);
                         LoanHeader.SetRange("Closed Date", MonthStart, MonthEnd);
-                        Page.Run(Page::"Employee Loan List", LoanHeader);
+                        Page.Run(Page::"Employees Loan List", LoanHeader);
                     end;
                 }
 
@@ -144,7 +144,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Rejected);
-                        Page.Run(Page::"Employee Loan List", LoanHeader);
+                        Page.Run(Page::"Employees Loan List", LoanHeader);
                     end;
                 }
             }
@@ -189,7 +189,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'New Loan';
                     Image = DocumentNew;
-                    RunObject = page "Employee Loan Card";
+                    RunObject = page "Employees Loan Card";
                     RunPageMode = Create;
                     ToolTip = 'Create a new loan application';
                 }
@@ -199,7 +199,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Employee Loans';
                     Image = List;
-                    RunObject = page "Employee Loan List";
+                    RunObject = page "Employees Loan List";
                     ToolTip = 'Open loan list';
                 }
 
@@ -208,7 +208,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Loan Types';
                     Image = Setup;
-                    RunObject = page "Loan Type List";
+                    RunObject = page "Loans Type List";
                     ToolTip = 'Maintain loan types';
                 }
             }
@@ -222,7 +222,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Disburse Loans';
                     Image = Payment;
-                    RunObject = page "Employee Loan List";
+                    RunObject = page "Employees Loan List";
                     ToolTip = 'Open approved loans for disbursement';
                 }
 
