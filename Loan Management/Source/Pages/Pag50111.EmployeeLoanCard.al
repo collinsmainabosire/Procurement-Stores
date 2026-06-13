@@ -78,7 +78,7 @@ page 50111 "Employee Loan Card"
                 }
             }
 
-            group(Status)
+            group(State)
             {
                 Caption = 'Status';
 
