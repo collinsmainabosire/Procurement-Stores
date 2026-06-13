@@ -223,8 +223,8 @@ page 50111 "Employee Loan Card"
                     LoanApprovalMgmt: Codeunit "Loan Approval Management";
                 begin
                     if LoanApprovalMgmt.ApproveLoan(Rec."Loan No.", UserId, '') then begin
-                        Rec.Refresh();
-                        CurrPage.Update(false);
+                        Rec.Get(Rec."Loan No.");
+CurrPage.Update(false);
                         Message('Loan approved successfully.');
                     end;
                 end;
@@ -246,7 +246,7 @@ page 50111 "Employee Loan Card"
                     if Confirm('Are you sure you want to reject this loan?', false) then begin
                         RejectionReason := 'Reason: ' + '';
                         if LoanApprovalMgmt.RejectLoan(Rec."Loan No.", UserId, RejectionReason) then begin
-                            Rec.Refresh();
+                            Rec.Get(Rec."Loan No.");
                             CurrPage.Update(false);
                             Message('Loan rejected.');
                         end;
@@ -268,7 +268,7 @@ page 50111 "Employee Loan Card"
                 begin
                     if Confirm('Are you sure you want to disburse this loan?', false) then begin
                         if LoanManagement.DisburseLoan(Rec."Loan No.", Today) then begin
-                            Rec.Refresh();
+                            Rec.Get(Rec."Loan No.");
                             CurrPage.Update(false);
                             Message('Loan disbursed successfully.');
                         end;
