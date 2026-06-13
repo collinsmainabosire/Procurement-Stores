@@ -107,8 +107,11 @@ page 50110 "Employees Loan List"
                 PromotedCategory = Process;
 
                 trigger OnAction()
+                var
+                    LoanManagement: Codeunit "Loans Management";
                 begin
-                    Rec.CalcFields("Outstanding Balance");
+                    Rec."Outstanding Balance" := LoanManagement.CalculateBalance(Rec."Loan No.");
+                    Rec.Modify();
                     CurrPage.Update(false);
                 end;
             }

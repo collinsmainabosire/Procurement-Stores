@@ -1,11 +1,11 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50116 "Loan Management Navigation"
+page 50116 "Loans Management Navigation"
 {
     PageType = Card;
     ApplicationArea = All;
     UsageCategory = Administration;
-    Caption = 'Loan Management Navigation';
+    Caption = 'Loans Management Navigation';
 
     layout
     {

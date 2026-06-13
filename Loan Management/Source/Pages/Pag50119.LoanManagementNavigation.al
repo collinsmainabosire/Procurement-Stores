@@ -1,6 +1,7 @@
 namespace BCTRAINING.BCTRAINING;
 
 using System.Threading;
+using Microsoft.Foundation.NoSeries;
 
 page 50120 "Loan Management Navigation"
 {

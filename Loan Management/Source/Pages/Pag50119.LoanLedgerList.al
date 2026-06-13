@@ -1,5 +1,4 @@
 namespace BCTRAINING.BCTRAINING;
-namespace BCTRAINING.BCTRAINING;
 
 page 50121 "Loan Ledger List"
 {
