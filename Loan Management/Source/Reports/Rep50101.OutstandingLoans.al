@@ -14,10 +14,6 @@ report 50101 "Outstanding Loans"
         {
             RequestFilterFields = "Employee No.", "Loan Type";
 
-            filter(OutstandingFilter; "Outstanding Balance")
-            {
-            }
-
             column(Loan_No; "Loan No.")
             {
             }
@@ -51,9 +47,9 @@ report 50101 "Outstanding Loans"
 
             trigger OnPreDataItem()
             begin
-                LoanHeader.SetRange("Status", "Status"::Disbursed);
-                LoanHeader.SetCurrentKey("Employee No.");
-                OutstandingFilter.SetFilter('>0');
+                SetRange(Status, Status::Disbursed);
+                SetFilter("Outstanding Balance", '>0');
+                SetCurrentKey("Employee No.");
             end;
         }
     }
