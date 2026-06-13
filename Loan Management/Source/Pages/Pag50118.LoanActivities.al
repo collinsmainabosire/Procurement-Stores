@@ -1,4 +1,7 @@
 namespace BCTRAINING.BCTRAINING;
+using Microsoft.Foundation.NoSeries;
+using Microsoft.Finance.GeneralLedger.Account;
+using Microsoft.HumanResources.Employee;
 
 page 50118 "Loan Activities"
 {
@@ -245,7 +248,7 @@ page 50118 "Loan Activities"
 
                     trigger OnAction()
                     var
-                        LoanManagement: Codeunit "Loan Management";
+                        LoanManagement: Codeunit "Loans Management";
                     begin
                         if Confirm('Process monthly loan deductions now?', false) then begin
                             LoanManagement.ProcessMonthlyDeductions();
@@ -296,7 +299,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Loan Setup';
                     Image = Setup;
-                    RunObject = page "Loan Setup Card";
+                    RunObject = page "Loans Setup Card";
                 }
 
                 action(NumberSeries)
@@ -304,7 +307,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Number Series';
                     Image = NumberSetup;
-                    RunObject = page "No. Series";
+                    RunObject = Page "No. Series";
                 }
 
                 action(JobQueueEntries)
@@ -312,7 +315,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Job Queue Entries';
                     Image = TaskList;
-                    RunObject = page "Job Queue Entries";
+                    //RunObject = page "Jobs Queue Entries";
                 }
 
                 action(JobQueueLogs)
@@ -320,7 +323,7 @@ page 50118 "Loan Activities"
                     ApplicationArea = All;
                     Caption = 'Job Queue Logs';
                     Image = Log;
-                    RunObject = page "Job Queue Log Entries";
+                    //RunObject = page "Job Queue Log Entries";
                 }
 
                 action(AuditTrail)

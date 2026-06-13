@@ -1,6 +1,4 @@
 namespace BCTRAINING.BCTRAINING;
-
-using System.Threading;
 using Microsoft.Foundation.NoSeries;
 
 page 50120 "Loan Management Navigation"
@@ -18,7 +16,7 @@ page 50120 "Loan Management Navigation"
                 ApplicationArea = All;
                 Caption = 'New Loan';
                 Image = DocumentNew;
-                RunObject = page "Employee Loan Card";
+                RunObject = page "Employees Loan Card";
                 RunPageMode = Create;
             }
         }
@@ -33,21 +31,21 @@ page 50120 "Loan Management Navigation"
                 {
                     ApplicationArea = All;
                     Caption = 'Employee Loans';
-                    RunObject = page "Employee Loan List";
+                    RunObject = page "Employees Loan List";
                 }
 
                 action(LoanTypes)
                 {
                     ApplicationArea = All;
                     Caption = 'Loan Types';
-                    RunObject = page "Loan Type List";
+                    RunObject = page "Loans Type List";
                 }
 
                 action(LoanSetup)
                 {
                     ApplicationArea = All;
                     Caption = 'Loan Setup';
-                    RunObject = page "Loan Setup Card";
+                    RunObject = page "Loans Setup Card";
                 }
             }
 
@@ -67,6 +65,32 @@ page 50120 "Loan Management Navigation"
                     ApplicationArea = All;
                     Caption = 'Loan Ledger Entries';
                     RunObject = page "Loan Ledger List";
+                }
+            }
+
+            group(Administration)
+            {
+                Caption = 'Administration';
+
+                action(NoSeries)
+                {
+                    ApplicationArea = All;
+                    Caption = 'No. Series';
+                    RunObject = page  "No. Series";
+                }
+
+                action(JobQueueEntries)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Job Queue Entries';
+                  //  RunObject = page "Job Queue Entries";
+                }
+
+                action(JobQueueLogEntries)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Job Queue Log Entries';
+                   // RunObject = page "Job Queue Log Entries";
                 }
             }
         }
@@ -92,35 +116,6 @@ page 50120 "Loan Management Navigation"
                 ApplicationArea = All;
                 Caption = 'Repayment Schedule';
                 RunObject = report "Repayment Schedule";
-            }
-        }
-
-        area(Sections)
-        {
-            group(Administration)
-            {
-                Caption = 'Administration';
-
-                action(NoSeries)
-                {
-                    ApplicationArea = All;
-                    Caption = 'No. Series';
-                    RunObject = page "No. Series";
-                }
-
-                action(JobQueueEntries)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Job Queue Entries';
-                    RunObject = page "Job Queue Entries";
-                }
-
-                action(JobQueueLogEntries)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Job Queue Log Entries';
-                    RunObject = page "Job Queue Log Entries";
-                }
             }
         }
     }
