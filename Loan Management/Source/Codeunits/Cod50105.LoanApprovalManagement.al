@@ -1,4 +1,5 @@
 namespace BCTRAINING.BCTRAINING;
+using System.Automation;
 
 codeunit 50105 "Loan Approval Management"
 {
@@ -18,19 +19,19 @@ codeunit 50105 "Loan Approval Management"
 
         if not LoanSetup."Enable Approval Workflow" then begin
             // Auto-approve if workflow disabled
-            ApproveLoan(LoanHeader."Loan No.", LoanUserId, '');
+            ApproveLoan(LoanHeader."Loan No.", UserId, '');
             exit(true);
         end;
 
         // Check if approval is required for this loan type
         if not IsApprovalRequired(LoanHeader."Loan Type") then begin
-            ApproveLoan(LoanHeader."Loan No.", LoanUserId, '');
+            ApproveLoan(LoanHeader."Loan No.", UserId, '');
             exit(true);
         end;
 
         // Update status
         LoanHeader."Status" := "Loan Status"::"Pending Approval";
-        LoanHeader."Approval Status" := "Approval Status"::Pending;
+        LoanHeader."Approval Status" := "Loan Approval Status"::"Pending";
         LoanHeader.Modify(true);
 
         // Send notification
