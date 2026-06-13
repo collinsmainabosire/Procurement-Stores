@@ -19,10 +19,10 @@ query 50101 "Active Loans Summary"
             {
                 Method = Sum;
             }
-            column(Loan_Count; "Loan No.")
+           /* column(Loan_Count; "Loan No.")
             {
                 Method = Count;
-            }
+            }*/
         }
     }
 }
