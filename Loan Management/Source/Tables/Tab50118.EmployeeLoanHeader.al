@@ -243,7 +243,7 @@ table 50118 "Employee Loan Header"
 
     local procedure GetNextLoanNumber(): Code[20]
     var
-        NoSeriesMgt: Codeunit NoSeriesManagement;
+        NoSeriesMgt: Codeunit "No. Series";
         LoanSetup: Record "Employee Loan Setup";
     begin
         LoanSetup.Get();

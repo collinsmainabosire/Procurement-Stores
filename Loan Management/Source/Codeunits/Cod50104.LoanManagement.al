@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-codeunit 50104 " Loan Management"
+codeunit 50104 "Loan Management"
 {
     trigger OnRun()
     begin
