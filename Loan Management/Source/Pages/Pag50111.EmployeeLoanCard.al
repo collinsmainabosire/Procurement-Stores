@@ -262,9 +262,9 @@ CurrPage.Update(false);
                 PromotedCategory = Process;
                 Visible = Rec."Status" = Rec."Status"::Approved;
 
-                trigger OnAction()
-                var
-                    LoanManagement: Codeunit "Loan Management";
+                /*trigger OnAction()
+              var
+                   LoanManagement: Codeunit "Loan Management";
                 begin
                     if Confirm('Are you sure you want to disburse this loan?', false) then begin
                         if LoanManagement.DisburseLoan(Rec."Loan No.", Today) then begin
@@ -273,7 +273,7 @@ CurrPage.Update(false);
                             Message('Loan disbursed successfully.');
                         end;
                     end;
-                end;
+                end;*/
             }
         }
     }

@@ -11,6 +11,6 @@ codeunit 50107 "Monthly Loan Processing"
     var
         LoanManagement: Codeunit "Loan Management";
     begin
-        LoanManagement.ProcessMonthlyDeductions();
+        //LoanManagement.ProcessMonthlyDeductions();
     end;
 }

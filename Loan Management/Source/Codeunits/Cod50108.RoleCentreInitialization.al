@@ -46,19 +46,19 @@ codeunit 50108 "Role Centre Initialization"
     procedure IsAdmin(): Boolean
     begin
         // Check if user has admin permissions
-        exit(HasPermission(ObjectType::Table, 50103, System.Security.AccessControl.Permission::Read));
+        //exit(HasPermission(ObjectType::Table, 50103, System.Security.AccessControl.Permission::Read));
     end;
 
     procedure IsApprover(): Boolean
     begin
         // Check if user has approval permissions
-        exit(HasPermission(ObjectType::Table, 50101, Permission::Modify));
+       // exit(HasPermission(ObjectType::Table, 50101, Permission::Modify));
     end;
 
     procedure IsPayrollOfficer(): Boolean
     begin
         // Check if user is in payroll role
-        exit(HasPermission(ObjectType::Codeunit, 50100, Permission::Execute));
+       // exit(HasPermission(ObjectType::Codeunit, 50100, Permission::Execute));
     end;
 
     procedure GetDashboardSummary(var PendingCount: Integer; var ActiveCount: Integer; var OverdueCount: Integer)
