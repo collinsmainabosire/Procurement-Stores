@@ -11,7 +11,7 @@ permissionset 50103 "LOAN MGT - PAYROLL"
        // page "Employee Loan List" = X,
         page "Loan Schedule List" = X,
         page "Loan Management Role Centre" = X,
-        codeunit "Loan Management" = X,
+     //  codeunit "Loan Management" = X,
        // codeunit "Loan Monthly Processing" = X,
         report "Loan Register" = X,
         report "Outstanding Loans" = X;

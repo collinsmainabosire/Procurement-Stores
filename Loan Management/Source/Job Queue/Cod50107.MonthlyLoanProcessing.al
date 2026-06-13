@@ -9,7 +9,7 @@ codeunit 50107 "Monthly Loan Processing"
 
     local procedure ProcessMonthlyLoans()
     var
-        LoanManagement: Codeunit "Loan Management";
+       // LoanManagement: Codeunit "Loan Management";
     begin
         //LoanManagement.ProcessMonthlyDeductions();
     end;

@@ -2,8 +2,8 @@ table 50118 "Employee Loan Header"
 {
     DataClassification = ToBeClassified;
     Caption = 'Employee Loan';
-    LookupPageID = "Employee Loan List";
-    DrillDownPageID = "Employee Loan List";
+  //  LookupPageID = "Employee Loan List";
+   // DrillDownPageID = "Employee Loan List";
 
     fields
     {

@@ -46,7 +46,7 @@ codeunit 50105 "Loan Approval Management"
     procedure ApproveLoan(LoanNo: Code[20]; ApprovedBy: Code[50]; Comments: Text[500]): Boolean
     var
         LoanHeader: Record "Employee Loan Header";
-        LoanManagement: Codeunit "Loan Management";
+       // LoanManagement: Codeunit "Loan Management";
     begin
         if not LoanHeader.Get(LoanNo) then begin
             Error('Loan %1 not found.', LoanNo);

@@ -57,14 +57,14 @@ page 50116 "Loan Management Navigation"
                 {
                     Caption = 'New Loan Application';
                     Image = New;
-                    RunObject = page "Employee Loan Card";
+                   // RunObject = page "Employee Loan Card";
                 }
 
                 action(LoanTypes)
                 {
                     Caption = 'Loan Types';
                     Image = Setup;
-                    RunObject = page "Loan Type List";
+                   // RunObject = page "Loan Type List";
                 }
             }
 
@@ -76,7 +76,7 @@ page 50116 "Loan Management Navigation"
                 {
                     Caption = 'Pending Approvals';
                     Image = Approvals;
-                    RunObject = page "Employee Loan List";
+                   // RunObject = page "Employee Loan List";
                 }
             }
 
@@ -88,7 +88,7 @@ page 50116 "Loan Management Navigation"
                 {
                     Caption = 'Disburse Loans';
                     Image = Payment;
-                    RunObject = page "Employee Loan List";
+                    //RunObject = page "Employee Loan List";
                 }
 
                 action(RepaymentSchedules)
@@ -133,7 +133,7 @@ page 50116 "Loan Management Navigation"
                 {
                     Caption = 'Loan Setup';
                     Image = Setup;
-                    RunObject = page "Loan Setup Card";
+                    //RunObject = page "Loan Setup Card";
                 }
 
                 action(JobQueue)
