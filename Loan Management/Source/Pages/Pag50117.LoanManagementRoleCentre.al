@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50106 "Loan Management Role Centre"
+page 50117 "Loan Management Role Centre"
 {
     PageType = RoleCenter;
     ApplicationArea = All;
