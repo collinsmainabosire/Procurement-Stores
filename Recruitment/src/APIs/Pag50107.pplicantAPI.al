@@ -1,7 +1,7 @@
 namespace BCTRAINING.BCTRAINING;
 
 page 50107 "pplicant API"
-{
+{/*
     APIGroup = 'jobportal';
     APIPublisher = 'bcTraining';
     APIVersion = 'v1.0';
@@ -401,5 +401,5 @@ page 50107 "pplicant API"
                     'SIGNATURE_HERE';
 
         exit(JWTToken);
-    end;
+    end;*/
 }
