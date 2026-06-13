@@ -1,4 +1,4 @@
-table 50121 " Employee Loan Ledger Entry"
+table 50121 "Employee Loan Ledger Entry"
 {
     DataClassification = ToBeClassified;
     Caption = 'Employee Loan Ledger Entry';

@@ -1,4 +1,5 @@
 namespace BCTRAINING.BCTRAINING;
+using Microsoft.HumanResources.Employee;
 
 codeunit 50104 "Loan Management"
 {
@@ -19,7 +20,7 @@ codeunit 50104 "Loan Management"
         LoanHeader.Insert(true);
 
         // Create audit log entry
-        LogLoanActivity(LoanHeader."Loan No.", 'Loan created', LoanUserId);
+        LogLoanActivity(LoanHeader."Loan No.", 'Loan created', UserId);
 
         exit(true);
     end;
