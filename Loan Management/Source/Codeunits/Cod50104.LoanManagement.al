@@ -1,7 +1,7 @@
 namespace BCTRAINING.BCTRAINING;
 using Microsoft.HumanResources.Employee;
 
-codeunit 50104 "Loan Management"
+codeunit 50104 "Loans Management"
 {
     trigger OnRun()
     begin
@@ -146,6 +146,7 @@ codeunit 50104 "Loan Management"
 
     /// <summary>
     /// Calculates current loan balance
+    /// CHANGED FROM: local procedure TO: procedure
     /// </summary>
     procedure CalculateBalance(LoanNo: Code[20]): Decimal
     var
@@ -298,7 +299,7 @@ codeunit 50104 "Loan Management"
     /// <summary>
     /// Logs loan activity
     /// </summary>
-    local procedure LogLoanActivity(LoanNo: Code[20]; Activity: Text[250]; UserId: Code[50])
+    local procedure LogLoanActivity(LoanNo: Code[20]; Activity: Text[250]; UserIdParam: Code[50])
     var
         LoanLedger: Record "Employee Loan Ledger Entry";
         LoanHeader: Record "Employee Loan Header";
@@ -311,6 +312,7 @@ codeunit 50104 "Loan Management"
             LoanLedger."Document Type" := "Loan Ledger Document Type"::Interest;
             LoanLedger."Description" := Activity;
             LoanLedger."Amount" := 0;
+            LoanLedger."Created By" := UserIdParam;
             LoanLedger.Insert(true);
         end;
     end;

@@ -24,10 +24,10 @@ page 50117 "Loan Management Role Centre"
             {
                 ShowCaption = false;
 
-                part(HeartbeatPart; "Loan Management Heartbeat")
+               /* part(HeartbeatPart; "Loan Management Heartbeat")
                 {
                     ApplicationArea = All;
-                }
+                }*/
             }
 
             group(Activities)

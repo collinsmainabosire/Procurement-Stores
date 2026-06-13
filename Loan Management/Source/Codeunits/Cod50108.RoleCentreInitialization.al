@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-codeunit 50104 "Role Centre Initialization"
+codeunit 50108 "Role Centre Initialization"
 {
     SingleInstance = true;
 
@@ -46,7 +46,7 @@ codeunit 50104 "Role Centre Initialization"
     procedure IsAdmin(): Boolean
     begin
         // Check if user has admin permissions
-        exit(HasPermission(ObjectType::Table, 50103, Permission::Read));
+        exit(HasPermission(ObjectType::Table, 50103, System.Security.AccessControl.Permission::Read));
     end;
 
     procedure IsApprover(): Boolean

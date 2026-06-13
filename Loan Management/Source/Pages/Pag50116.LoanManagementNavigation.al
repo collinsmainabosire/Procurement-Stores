@@ -50,7 +50,7 @@ page 50116 "Loan Management Navigation"
                 {
                     Caption = 'Employee Loans';
                     Image = List;
-                    RunObject = page "Employee Loan List";
+                    //RunObject = page "Employee Loan List";
                 }
 
                 action(NewLoan)

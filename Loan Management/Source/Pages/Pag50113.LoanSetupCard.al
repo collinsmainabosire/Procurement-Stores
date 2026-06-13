@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50113 "Loan Setup Card"
+page 50113 "Loans Setup Card"
 {
     PageType = Card;
     ApplicationArea = All;

@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50108 "Loan Type List"
+page 50108 "Loans Type List"
 {
     PageType = List;
     ApplicationArea = All;

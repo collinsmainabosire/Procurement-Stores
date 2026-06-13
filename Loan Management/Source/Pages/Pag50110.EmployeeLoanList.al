@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50110 "Employee Loan List"
+page 50110 "Employees Loan List"
 {
     PageType = List;
     ApplicationArea = All;
@@ -77,7 +77,7 @@ page 50110 "Employee Loan List"
 
                 trigger OnAction()
                 begin
-                    Page.Run(Page::"Employee Loan Card", Rec);
+                    Page.Run(Page::"Employees Loan Card", Rec);
                 end;
             }
 
