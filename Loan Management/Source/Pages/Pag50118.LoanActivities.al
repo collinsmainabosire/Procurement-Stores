@@ -32,7 +32,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::"Pending Approval");
-                        Page.Run(Page::"Employees Loan List", LoanHeader);
+                        Page.Run(Page::"Employee Loan List", LoanHeader);
                     end;
                 }
 
@@ -47,7 +47,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Approved);
-                        Page.Run(Page::"Employees Loan List", LoanHeader);
+                        Page.Run(Page::"Employee Loan List", LoanHeader);
                     end;
                 }
             }
@@ -67,7 +67,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Disbursed);
-                        Page.Run(Page::"Employees Loan List", LoanHeader);
+                        Page.Run(Page::"Employee Loan List", LoanHeader);
                     end;
                 }
 
@@ -132,7 +132,7 @@ page 50118 "Loan Activities"
                         MonthEnd := CalcDate('<CM>', Today);
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Closed);
                         LoanHeader.SetRange("Closed Date", MonthStart, MonthEnd);
-                        Page.Run(Page::"Employees Loan List", LoanHeader);
+                        Page.Run(Page::"Employee Loan List", LoanHeader);
                     end;
                 }
 
@@ -147,7 +147,7 @@ page 50118 "Loan Activities"
                         LoanHeader: Record "Employee Loan Header";
                     begin
                         LoanHeader.SetRange("Status", LoanHeader."Status"::Rejected);
-                        Page.Run(Page::"Employees Loan List", LoanHeader);
+                        Page.Run(Page::"Employee Loan List", LoanHeader);
                     end;
                 }
             }

@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-page 50111 "Employees Loan Card"
+page 50111 "Employee Loan Card"
 {
     PageType = Card;
     ApplicationArea = All;
