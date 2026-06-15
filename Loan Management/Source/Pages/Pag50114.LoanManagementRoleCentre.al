@@ -10,7 +10,7 @@ page 50114 "Loan Management Role Centre"
     {
         area(RoleCenter)
         {
-            
+
         }
     }
 
@@ -28,6 +28,15 @@ page 50114 "Loan Management Role Centre"
                     Caption = 'New Loan Application';
                     Image = New;
                     Promoted = true;
+                    RunObject = page "Employee Loan List";
+                }
+                action(LoanSchedule)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Loan Schedule';
+                    Image = New;
+                    Promoted = true;
+                    RunObject = page "Loan Schedule List";
                 }
             }
         }
@@ -43,7 +52,8 @@ page 50114 "Loan Management Role Centre"
                     ApplicationArea = All;
                     Caption = 'Review Pending Applications';
                     Image = ViewDetails;
-                    
+
+
                 }
             }
 
@@ -81,6 +91,7 @@ page 50114 "Loan Management Role Centre"
                     ApplicationArea = All;
                     Caption = 'Loan Types';
                     Image = Setup;
+                    RunObject = page "Loan Type Card";
                 }
 
                 action(LoanSystemSetup)
@@ -88,6 +99,7 @@ page 50114 "Loan Management Role Centre"
                     ApplicationArea = All;
                     Caption = 'Loan Setup';
                     Image = Setup;
+                    RunObject = page "Loan Setup Card";
                 }
             }
         }
