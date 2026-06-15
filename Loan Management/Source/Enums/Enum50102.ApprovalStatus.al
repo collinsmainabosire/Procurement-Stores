@@ -1,6 +1,6 @@
 namespace BCTRAINING.BCTRAINING;
 
-enum 50102 "Approval Status"
+enum 50102 "Loan Approval Status"
 {
     Extensible = true;
     
