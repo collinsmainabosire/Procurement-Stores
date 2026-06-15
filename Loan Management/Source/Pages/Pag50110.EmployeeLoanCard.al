@@ -304,7 +304,7 @@ page 50110 "Employee Loan Card"
                 begin
                     if LoanApprovalMgmt.ApproveLoan(Rec."Loan No.", UserId, '') then begin
                         Message('Loan approved successfully');
-                        Rec.Refresh();
+                        Rec.Get(Rec."Loan No.");
                         CurrPage.Update(false);
                     end;
                 end;
@@ -329,7 +329,7 @@ page 50110 "Employee Loan Card"
                         RejectionReason := 'Rejected by approver';
                         if LoanApprovalMgmt.RejectLoan(Rec."Loan No.", UserId, RejectionReason) then begin
                             Message('Loan rejected');
-                            Rec.Refresh();
+                            Rec.Get(Rec."Loan No.");
                             CurrPage.Update(false);
                         end;
                     end;
@@ -353,7 +353,7 @@ page 50110 "Employee Loan Card"
                     if Confirm('Are you sure you want to disburse this loan?', false) then begin
                         if LoanMgmt.DisburseLoan(Rec."Loan No.", Today) then begin
                             Message('Loan disbursed successfully');
-                            Rec.Refresh();
+                            Rec.Get(Rec."Loan No.");
                             CurrPage.Update(false);
                         end;
                     end;
