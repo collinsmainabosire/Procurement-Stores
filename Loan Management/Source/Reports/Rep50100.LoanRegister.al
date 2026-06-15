@@ -7,13 +7,13 @@ report 50100 "Loan Register"
     DefaultLayout = RDLC;
     RDLCLayout = './Reports/LoanRegister.rdl';
     UsageCategory = ReportsAndAnalysis;
-    
+
     dataset
     {
         dataitem(LoanHeader; "Employee Loan Header")
         {
             RequestFilterFields = "Loan No.", "Employee No.", "Status", "Application Date";
-            
+
             column(Loan_No; "Loan No.")
             {
                 IncludeCaption = true;
@@ -70,7 +70,7 @@ report 50100 "Loan Register"
             {
                 IncludeCaption = true;
             }
-            
+
             // Summary columns
             column(TotalRequestedAmount; TotalRequestedAmount)
             {
@@ -84,19 +84,19 @@ report 50100 "Loan Register"
             column(TotalPaidAmount; TotalPaidAmount)
             {
             }
-            
+
             trigger OnPreDataItem()
             begin
                 // Sort by loan number
                 SetCurrentKey("Loan No.");
-                
+
                 // Initialize totals
                 TotalRequestedAmount := 0;
                 TotalApprovedAmount := 0;
                 TotalOutstandingBalance := 0;
                 TotalPaidAmount := 0;
             end;
-            
+
             trigger OnAfterGetRecord()
             begin
                 // Accumulate totals
@@ -107,11 +107,11 @@ report 50100 "Loan Register"
             end;
         }
     }
-    
+
     requestpage
     {
         SaveValues = true;
-        
+
         layout
         {
             area(Content)
@@ -119,21 +119,21 @@ report 50100 "Loan Register"
                 group(Filters)
                 {
                     Caption = 'Report Filters';
-                    
+
                     field(StatusFilter; StatusFilterVar)
                     {
                         Caption = 'Status';
                         ApplicationArea = All;
                         ToolTip = 'Leave blank to show all statuses';
                     }
-                    
+
                     field(FromDate; FromDateVar)
                     {
                         Caption = 'From Application Date';
                         ApplicationArea = All;
                         ToolTip = 'Start date for report';
                     }
-                    
+
                     field(ToDate; ToDateVar)
                     {
                         Caption = 'To Application Date';
@@ -143,7 +143,7 @@ report 50100 "Loan Register"
                 }
             }
         }
-        
+
         trigger OnOpenPage()
         begin
             // Set default dates
@@ -151,17 +151,17 @@ report 50100 "Loan Register"
             ToDateVar := Today;
         end;
     }
-    
+
     trigger OnPreReport()
     begin
         // Apply filters from request page
         if FromDateVar <> 0D then
             LoanHeader.SetFilter("Application Date", '>=%1', FromDateVar);
-        
+
         if ToDateVar <> 0D then
             LoanHeader.SetFilter("Application Date", '<=%1', ToDateVar);
     end;
-    
+
     var
         LoanHeaders: Record "Employee Loan Header";
         TotalRequestedAmount: Decimal;

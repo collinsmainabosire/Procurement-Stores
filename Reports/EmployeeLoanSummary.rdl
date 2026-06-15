@@ -23,6 +23,51 @@
     </ReportSection>
   </ReportSections>
   <ReportParameters>
+    <ReportParameter Name="LoanType_CodeCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>LoanType_CodeCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>LoanType_CodeCaption</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="LoanType_DescriptionCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>LoanType_DescriptionCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>LoanType_DescriptionCaption</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="LoanType_MaxAmountCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>LoanType_MaxAmountCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>LoanType_MaxAmountCaption</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="LoanType_InterestRateCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>LoanType_InterestRateCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>LoanType_InterestRateCaption</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="LoanType_ActiveCaption">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>LoanType_ActiveCaption</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>LoanType_ActiveCaption</Prompt>
+    </ReportParameter>
     <ReportParameter Name="Loan_NoCaption">
       <DataType>String</DataType>
       <DefaultValue>
@@ -50,24 +95,6 @@
       </DefaultValue>
       <Prompt>Employee_NameCaption</Prompt>
     </ReportParameter>
-    <ReportParameter Name="Loan_TypeCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Loan_TypeCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Loan_TypeCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Requested_AmountCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Requested_AmountCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Requested_AmountCaption</Prompt>
-    </ReportParameter>
     <ReportParameter Name="Approved_AmountCaption">
       <DataType>String</DataType>
       <DefaultValue>
@@ -86,15 +113,6 @@
       </DefaultValue>
       <Prompt>Outstanding_BalanceCaption</Prompt>
     </ReportParameter>
-    <ReportParameter Name="Total_PaidCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Total_PaidCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Total_PaidCaption</Prompt>
-    </ReportParameter>
     <ReportParameter Name="StatusCaption">
       <DataType>String</DataType>
       <DefaultValue>
@@ -103,51 +121,6 @@
         </Values>
       </DefaultValue>
       <Prompt>StatusCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Application_DateCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Application_DateCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Application_DateCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Approval_DateCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Approval_DateCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Approval_DateCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Term_MonthsCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Term_MonthsCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Term_MonthsCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Created_ByCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Created_ByCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Created_ByCaption</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Created_DateCaption">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>Created_DateCaption</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Created_DateCaption</Prompt>
     </ReportParameter>
   </ReportParameters>
   <Code>Public Function BlankZero(ByVal Value As Decimal)
@@ -192,6 +165,30 @@ End Function
   <DataSets>
     <DataSet Name="DataSet_Result">
       <Fields>
+        <Field Name="LoanType_Code">
+          <DataField>LoanType_Code</DataField>
+        </Field>
+        <Field Name="LoanType_Description">
+          <DataField>LoanType_Description</DataField>
+        </Field>
+        <Field Name="LoanType_MaxAmount">
+          <DataField>LoanType_MaxAmount</DataField>
+        </Field>
+        <Field Name="LoanType_MaxAmountFormat">
+          <DataField>LoanType_MaxAmountFormat</DataField>
+        </Field>
+        <Field Name="LoanType_InterestRate">
+          <DataField>LoanType_InterestRate</DataField>
+        </Field>
+        <Field Name="LoanType_InterestRateFormat">
+          <DataField>LoanType_InterestRateFormat</DataField>
+        </Field>
+        <Field Name="LoanType_Active">
+          <DataField>LoanType_Active</DataField>
+        </Field>
+        <Field Name="LoanCount">
+          <DataField>LoanCount</DataField>
+        </Field>
         <Field Name="Loan_No">
           <DataField>Loan_No</DataField>
         </Field>
@@ -200,15 +197,6 @@ End Function
         </Field>
         <Field Name="Employee_Name">
           <DataField>Employee_Name</DataField>
-        </Field>
-        <Field Name="Loan_Type">
-          <DataField>Loan_Type</DataField>
-        </Field>
-        <Field Name="Requested_Amount">
-          <DataField>Requested_Amount</DataField>
-        </Field>
-        <Field Name="Requested_AmountFormat">
-          <DataField>Requested_AmountFormat</DataField>
         </Field>
         <Field Name="Approved_Amount">
           <DataField>Approved_Amount</DataField>
@@ -222,53 +210,38 @@ End Function
         <Field Name="Outstanding_BalanceFormat">
           <DataField>Outstanding_BalanceFormat</DataField>
         </Field>
-        <Field Name="Total_Paid">
-          <DataField>Total_Paid</DataField>
-        </Field>
-        <Field Name="Total_PaidFormat">
-          <DataField>Total_PaidFormat</DataField>
-        </Field>
         <Field Name="Status">
           <DataField>Status</DataField>
         </Field>
-        <Field Name="Application_Date">
-          <DataField>Application_Date</DataField>
+        <Field Name="LoanTypeTotalCount">
+          <DataField>LoanTypeTotalCount</DataField>
         </Field>
-        <Field Name="Approval_Date">
-          <DataField>Approval_Date</DataField>
+        <Field Name="LoanTypeTotalAmount">
+          <DataField>LoanTypeTotalAmount</DataField>
         </Field>
-        <Field Name="Term_Months">
-          <DataField>Term_Months</DataField>
+        <Field Name="LoanTypeTotalAmountFormat">
+          <DataField>LoanTypeTotalAmountFormat</DataField>
         </Field>
-        <Field Name="Created_By">
-          <DataField>Created_By</DataField>
+        <Field Name="LoanTypeTotalOutstanding">
+          <DataField>LoanTypeTotalOutstanding</DataField>
         </Field>
-        <Field Name="Created_Date">
-          <DataField>Created_Date</DataField>
+        <Field Name="LoanTypeTotalOutstandingFormat">
+          <DataField>LoanTypeTotalOutstandingFormat</DataField>
         </Field>
-        <Field Name="TotalRequestedAmount">
-          <DataField>TotalRequestedAmount</DataField>
+        <Field Name="GrandTotalCount">
+          <DataField>GrandTotalCount</DataField>
         </Field>
-        <Field Name="TotalRequestedAmountFormat">
-          <DataField>TotalRequestedAmountFormat</DataField>
+        <Field Name="GrandTotalAmount">
+          <DataField>GrandTotalAmount</DataField>
         </Field>
-        <Field Name="TotalApprovedAmount">
-          <DataField>TotalApprovedAmount</DataField>
+        <Field Name="GrandTotalAmountFormat">
+          <DataField>GrandTotalAmountFormat</DataField>
         </Field>
-        <Field Name="TotalApprovedAmountFormat">
-          <DataField>TotalApprovedAmountFormat</DataField>
+        <Field Name="GrandTotalOutstanding">
+          <DataField>GrandTotalOutstanding</DataField>
         </Field>
-        <Field Name="TotalOutstandingBalance">
-          <DataField>TotalOutstandingBalance</DataField>
-        </Field>
-        <Field Name="TotalOutstandingBalanceFormat">
-          <DataField>TotalOutstandingBalanceFormat</DataField>
-        </Field>
-        <Field Name="TotalPaidAmount">
-          <DataField>TotalPaidAmount</DataField>
-        </Field>
-        <Field Name="TotalPaidAmountFormat">
-          <DataField>TotalPaidAmountFormat</DataField>
+        <Field Name="GrandTotalOutstandingFormat">
+          <DataField>GrandTotalOutstandingFormat</DataField>
         </Field>
       </Fields>
       <Query>
