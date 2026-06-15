@@ -5,61 +5,104 @@ page 50114 "Loan Management Role Centre"
     PageType = RoleCenter;
     ApplicationArea = All;
     Caption = 'Loan Management';
-    
+
     layout
     {
         area(RoleCenter)
         {
-            // Dashboard summary
-            group(Dashboard)
+            
+        }
+    }
+
+    actions
+    {
+        area(Creation)
+        {
+            group(ApplicationActionsGroup)
             {
-                ShowCaption = false;
-                part(DashboardPart; "Loan Dashboard Part")
+                Caption = 'Applications';
+
+                action(NewLoanApplication)
                 {
                     ApplicationArea = All;
+                    Caption = 'New Loan Application';
+                    Image = New;
+                    Promoted = true;
                 }
             }
-            
-            // Key metrics and activities
-            group(Activities)
+        }
+
+        area(Processing)
+        {
+            group(ApprovalActionsGroup)
             {
-                Caption = 'Activities';
-                
-                part(ApprovalsPart; "Loan Approvals Part")
+                Caption = 'Approvals';
+
+                action(ReviewPendingApplications)
                 {
                     ApplicationArea = All;
-                }
-                
-                part(ActiveLoansPart; "Loan Active Loans Part")
-                {
-                    ApplicationArea = All;
-                }
-                
-                part(OverduePaymentsPart; "Loan Overdue Payments Part")
-                {
-                    ApplicationArea = All;
+                    Caption = 'Review Pending Applications';
+                    Image = ViewDetails;
+                    
                 }
             }
-            
-            // Quick access to main functions
-            group(MainFunctions)
+
+            group(DisbursementActionsGroup)
             {
-                Caption = 'Main Functions';
-                
-                part(ActionsPart; "Loan Actions Part")
+                Caption = 'Disbursement';
+
+                action(ViewApprovedLoans)
                 {
                     ApplicationArea = All;
+                    Caption = 'View Approved Loans';
+                    Image = ViewDetails;
+
                 }
             }
-            
-            // Reports
-            group(Reports)
+
+            group(PaymentProcessingGroup)
+            {
+                Caption = 'Payment Processing';
+
+                action(ViewOverduePayments)
+                {
+                    ApplicationArea = All;
+                    Caption = 'View Overdue Payments';
+                    Image = Attention;
+                }
+            }
+
+            group(SetupActionsGroup)
+            {
+                Caption = 'Setup';
+
+                action(ManageLoanTypes)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Loan Types';
+                    Image = Setup;
+                }
+
+                action(LoanSystemSetup)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Loan Setup';
+                    Image = Setup;
+                }
+            }
+        }
+
+        area(Reporting)
+        {
+            group(ReportActionsGroup)
             {
                 Caption = 'Reports';
-                
-                part(ReportsPart; "Loan Reports Part")
+
+                action(LoanRegisterReport)
                 {
                     ApplicationArea = All;
+                    Caption = 'Loan Register';
+                    Image = Report;
                 }
             }
         }
